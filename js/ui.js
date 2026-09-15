@@ -46,7 +46,7 @@
   function renderIngredients(day, enabled) {
     const container = byId("ingredients");
     container.textContent = "";
-    CVVH.Config.FOODS.forEach(function (food) {
+    CVVH.Config.FOODS.filter(function (food) { return food.unlockDay <= day; }).forEach(function (food) {
       const locked = food.unlockDay > day;
       const button = document.createElement("button");
       button.className = "ingredient-button" + (locked ? " locked" : "");
@@ -70,6 +70,20 @@
       button.setAttribute("aria-label", "Chọn " + sauce.name);
       button.appendChild(image(sauce.image, ""));
       const span = document.createElement("span"); span.textContent = sauce.shortName; button.appendChild(span);
+      container.appendChild(button);
+    });
+  }
+
+  function renderDrinks(day, selected, enabled) {
+    const container = byId("drinks"); container.textContent = "";
+    CVVH.Config.DRINKS.filter(function (drink) { return drink.unlockDay <= day; }).forEach(function (drink) {
+      const button = document.createElement("button");
+      button.className = "drink-button" + (selected === drink.id ? " selected" : "");
+      button.dataset.drinkId = drink.id; button.disabled = !enabled;
+      button.setAttribute("aria-pressed", String(selected === drink.id));
+      button.setAttribute("aria-label", drink.id === "none" ? "Đơn không có nước" : "Pha " + drink.name + ", giá vốn " + CVVH.Economy.money(drink.cost));
+      button.appendChild(image(drink.image, ""));
+      const span = document.createElement("span"); span.textContent = drink.shortName; button.appendChild(span);
       container.appendChild(button);
     });
   }
@@ -154,10 +168,17 @@
     const sauce = CVVH.Config.sauceById(order.sauce);
     const sauceWrap = document.createElement("div"); sauceWrap.className = "order-sauce";
     sauceWrap.appendChild(image(sauce.image, sauce.name)); const label = document.createElement("small"); label.textContent = sauce.shortName; sauceWrap.appendChild(label); container.appendChild(sauceWrap);
+    const drink = CVVH.Config.drinkById(order.drink || "none");
+    if (drink) {
+      const drinkWrap = document.createElement("div"); drinkWrap.className = "order-drink"; drinkWrap.title = drink.name;
+      drinkWrap.appendChild(image(drink.image, drink.name));
+      const drinkLabel = document.createElement("small"); drinkLabel.textContent = drink.shortName; drinkWrap.appendChild(drinkLabel);
+      container.appendChild(drinkWrap);
+    }
   }
 
   function customerRenderKey(customer) {
-    return JSON.stringify([customer.name, customer.avatar, customer.speech, customer.reward, customer.order.items, customer.order.sauce, customer.relationshipStage, Boolean(customer.bonusSecond)]);
+    return JSON.stringify([customer.name, customer.avatar, customer.speech, customer.reward, customer.order.items, customer.order.sauce, customer.order.drink || "none", customer.relationshipStage, Boolean(customer.bonusSecond)]);
   }
 
   function createCustomerCard(customer) {
@@ -231,11 +252,13 @@
 
   function updateHUD(game) {
     byId("hud-day").textContent = game.day;
-    byId("hud-time").textContent = formatTime(game.remainingTime);
+    const resolved = game.summary.served + game.summary.lost;
+    byId("hud-time").textContent = resolved + "/" + game.dailyTarget;
+    byId("customer-count").textContent = "Lượt " + Math.max(1, Math.min(game.spawnedCount, game.dailyTarget)) + "/" + game.dailyTarget;
     byId("hud-money").textContent = CVVH.Economy.money(game.currentWallet());
     byId("hud-reputation").textContent = Math.round(game.reputation);
     byId("rep-bar").style.width = game.reputation + "%";
-    byId("day-time-bar").style.width = Math.max(0, game.remainingTime / game.dayDuration * 100) + "%";
+    byId("day-time-bar").style.width = Math.min(100, resolved / game.dailyTarget * 100) + "%";
     const multiplier = CVVH.Economy.comboMultiplier(game.combo);
     byId("hud-combo").textContent = "x" + multiplier;
     const box = byId("combo-box"); box.classList.toggle("hot", multiplier > 1);
@@ -246,18 +269,31 @@
     return String(Math.floor(value / 60)).padStart(2, "0") + ":" + String(value % 60).padStart(2, "0");
   }
 
-  function updateServeState(selectedCustomer, trayLength, sauce, enabled) {
+  function updateServeState(selectedCustomer, trayLength, sauce, drink, enabled) {
     const button = byId("serve-btn");
-    const ready = Boolean(selectedCustomer && trayLength > 0 && sauce);
+    const ready = Boolean(selectedCustomer && trayLength > 0 && sauce && drink);
     let hint = "Chọn một khách để phục vụ";
     if (selectedCustomer && trayLength === 0) hint = selectedCustomer.name + " đã được chọn · Lấy món chín ra khay";
     else if (selectedCustomer && !sauce) hint = selectedCustomer.name + " đã được chọn · Chọn nước sốt";
+    else if (selectedCustomer && !drink) hint = selectedCustomer.name + " đã được chọn · Chọn trà hoặc Không nước";
     else if (ready) hint = "Sẵn sàng phục vụ " + selectedCustomer.name;
     button.disabled = !enabled;
     button.classList.toggle("is-ready", ready);
     button.title = enabled ? (ready ? "Giao khay cho " + selectedCustomer.name : "Bấm để xem bước còn thiếu") : "Trò chơi đang tạm dừng";
     button.setAttribute("aria-label", button.title);
     byId("selected-customer-label").textContent = hint;
+  }
+
+  function showKhanhAlert(done) {
+    const alert = byId("khanh-alert");
+    alert.hidden = false;
+    document.body.classList.add("khanh-shake");
+    CVVH.Audio.play("arrival");
+    window.setTimeout(function () {
+      alert.hidden = true;
+      document.body.classList.remove("khanh-shake");
+      if (typeof done === "function") done();
+    }, 2850);
   }
 
   function playCustomerDialogue(lines, options, done) {
@@ -425,9 +461,9 @@
 
   CVVH.UI = {
     byId: byId, showScreen: showScreen, openModal: openModal, closeModal: closeModal, renderMenu: renderMenu,
-    setSoundButtons: setSoundButtons, renderIngredients: renderIngredients, renderSauces: renderSauces,
+    setSoundButtons: setSoundButtons, renderIngredients: renderIngredients, renderSauces: renderSauces, renderDrinks: renderDrinks,
     renderFryers: renderFryers, updateFryers: updateFryers, renderTray: renderTray, renderCustomers: renderCustomers, updateCustomers: updateCustomers, updateHUD: updateHUD,
-    updateServeState: updateServeState, playCustomerDialogue: playCustomerDialogue, showUnlock: showUnlock,
+    updateServeState: updateServeState, playCustomerDialogue: playCustomerDialogue, showUnlock: showUnlock, showKhanhAlert: showKhanhAlert,
     toast: toast, floating: floating, coinBurst: coinBurst, sparkle: sparkle,
     renderShop: renderShop, renderStats: renderStats, renderCharacterBook: renderCharacterBook, renderEnd: renderEnd
   };

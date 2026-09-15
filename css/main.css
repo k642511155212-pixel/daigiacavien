@@ -1,20 +1,20 @@
 :root {
-  --orange: #f46b2f;
-  --orange-dark: #cf401f;
-  --gold: #ffc449;
-  --cream: #fff3d4;
-  --cream-2: #ffe5af;
-  --teal: #18a89b;
-  --teal-dark: #087a74;
-  --red: #e83c38;
+  --orange: #ff7a2f;
+  --orange-dark: #d94924;
+  --gold: #ffd34e;
+  --cream: #fff7d6;
+  --cream-2: #ffe4a3;
+  --teal: #2cb9ae;
+  --teal-dark: #087b78;
+  --red: #ef4a3e;
   --pink: #f58b93;
   --brown: #4a2418;
   --brown-2: #6e3826;
   --ink: #311813;
   --green: #45b85a;
-  --shadow: 0 8px 0 rgba(77, 35, 20, .18), 0 16px 28px rgba(59, 25, 14, .2);
-  --border: 3px solid rgba(83, 39, 23, .88);
-  font-family: "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --shadow: 0 6px 0 rgba(77, 35, 20, .3), 0 12px 22px rgba(59, 25, 14, .18);
+  --border: 3px solid #4f2a22;
+  font-family: "Be Vietnam Pro", "Noto Sans", "DejaVu Sans", Arial, sans-serif;
   color: var(--ink);
   background: #51291f;
   font-synthesis: none;
@@ -29,6 +29,7 @@ body {
     radial-gradient(circle at 20% 5%, rgba(255, 190, 70, .35), transparent 28rem),
     linear-gradient(160deg, #733525 0%, #2d1b27 65%, #152c34 100%);
 }
+body, button, input { font-family: inherit; line-height: 1.35; }
 button, input { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; }
 button:focus-visible { outline: 4px solid #fff; outline-offset: 3px; }
@@ -54,12 +55,14 @@ button:disabled { cursor: not-allowed; filter: grayscale(.35); opacity: .58; tra
 .skewer-loader i:nth-child(3) { animation-delay: .24s; background: #fff1b9; }
 
 .game-panel {
-  background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,237,192,.96));
-  border: var(--border); border-radius: 22px;
-  box-shadow: var(--shadow), inset 0 2px 0 rgba(255,255,255,.9);
+  background: linear-gradient(180deg, #fffdf1, #ffe4a4);
+  border: var(--border); border-radius: 8px;
+  box-shadow: var(--shadow), inset 0 3px 0 #fff;
+  image-rendering: pixelated;
 }
 .menu-screen {
-  background-image: linear-gradient(rgba(49, 21, 16, .2), rgba(49, 21, 16, .45)), url("../assets/restaurant/stall.svg");
+  background-color:#59ced4;
+  background-image: linear-gradient(rgba(37, 116, 124, .05), rgba(66, 31, 24, .28)), url("../assets/restaurant/stall.svg");
   background-position: center; background-size: cover;
 }
 .menu-scene {
@@ -68,8 +71,9 @@ button:disabled { cursor: not-allowed; filter: grayscale(.35); opacity: .58; tra
   padding: 32px clamp(18px, 5vw, 72px); backdrop-filter: saturate(1.08);
 }
 .menu-sign { grid-column: 1 / -1; text-align: center; color: #fff; text-shadow: 0 3px 0 var(--brown); }
-.menu-sign img { width: min(480px, 70vw); filter: drop-shadow(0 10px 0 rgba(80,30,14,.32)); }
-.menu-sign p { margin: 6px 0 0; font-size: 1.05rem; font-weight: 900; }
+.menu-sign img { width: min(520px, 76vw); filter: drop-shadow(0 8px 0 #4f2a22); image-rendering:pixelated; }
+.menu-sign p { width:fit-content; margin: 10px auto 0; padding:8px 14px; font-size: 1rem; font-weight: 900; background:#fff7d6;color:#4f2a22;border:3px solid #4f2a22;box-shadow:0 4px 0 #4f2a22; }
+.menu-sign p span { color:var(--orange-dark);margin-right:8px;font-size:.78rem;letter-spacing:.08em; }
 .menu-card { padding: 22px; display: grid; gap: 12px; }
 .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .menu-grid #book-btn { grid-column: 1 / -1; }
@@ -81,7 +85,7 @@ button:disabled { cursor: not-allowed; filter: grayscale(.35); opacity: .58; tra
 .menu-progress .chapter-progress strong { font-size:.86rem; line-height:1.15; }
 
 .game-button {
-  min-height: 48px; border: 3px solid var(--brown); border-radius: 14px; padding: 10px 16px;
+  min-height: 48px; border: 3px solid var(--brown); border-radius: 5px; padding: 10px 16px;
   color: var(--brown); font-weight: 950; text-transform: uppercase; letter-spacing: .02em;
   box-shadow: 0 5px 0 var(--brown), inset 0 2px 0 rgba(255,255,255,.55);
   cursor: pointer; transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
@@ -153,3 +157,18 @@ button:disabled { cursor: not-allowed; filter: grayscale(.35); opacity: .58; tra
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* Pixel cabinet skin — blocky without sacrificing Vietnamese readability. */
+.menu-card,.menu-progress { border-radius:7px; background:linear-gradient(#fffdf0,#ffd979); box-shadow:0 7px 0 #4f2a22,0 18px 30px rgba(50,25,18,.26),inset 0 3px #fff; }
+.menu-card::before { content:"MỞ QUẦY"; display:block; width:fit-content; margin:-38px auto 8px; padding:6px 16px; color:#fff; background:#e65335; border:3px solid #4f2a22; box-shadow:0 4px 0 #4f2a22; font-weight:950; letter-spacing:.08em; }
+.menu-progress div { border-radius:4px; border:2px solid #9e5e36; box-shadow:inset 0 2px #fff; }
+.secondary-screen { background-color:#f88a42; background-image:linear-gradient(45deg,rgba(255,211,81,.22) 25%,transparent 25%,transparent 75%,rgba(255,211,81,.22) 75%),linear-gradient(45deg,rgba(255,211,81,.22) 25%,transparent 25%,transparent 75%,rgba(255,211,81,.22) 75%); background-size:32px 32px;background-position:0 0,16px 16px; }
+.secondary-header h1,.modal-card h2,.end-card h1 { line-height:1.22; padding-block:.08em; text-shadow:3px 3px 0 #fff0b3; }
+.modal-card { border-radius:7px;background:linear-gradient(#fffdf0,#ffe099);box-shadow:0 8px 0 #4f2a22,0 24px 50px rgba(0,0,0,.35); }
+.upgrade-card,.stat-card,.book-card { border-radius:7px!important;background:linear-gradient(135deg,#fffdf1,#ffd97c)!important;box-shadow:0 6px 0 #4f2a22!important; }
+.book-card { position:relative;overflow:hidden; }
+.book-card::after { content:"";position:absolute;inset:5px;pointer-events:none;border:2px dashed rgba(117,63,32,.25); }
+.book-portrait { border-radius:4px!important; image-rendering:pixelated; background:#6bd3ca!important; box-shadow:4px 4px 0 #4f2a22!important; }
+.book-trait,.wallet-chip { border-radius:4px!important; }
+.unlock-portrait-wrap,.story-speaker img,.customer-dialogue>img { border-radius:5px!important;image-rendering:pixelated; }
+.toast { border-radius:5px; }

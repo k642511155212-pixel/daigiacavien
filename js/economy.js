@@ -22,7 +22,7 @@
     const baseRevenue = order.items.reduce(function (sum, foodId) {
       const food = CVVH.Config.foodById(foodId);
       return sum + (food ? food.price : 0);
-    }, 0);
+    }, 0) + ((CVVH.Config.drinkById(order.drink || "none") || {}).price || 0);
     const premiumRevenue = Math.round(baseRevenue * (1 + modifiers.orderValueBonus + (order.secretBonus || 0)));
     const multiplier = comboMultiplier(combo);
     const patienceTip = patienceRatio > .72 ? 0.14 : patienceRatio > .42 ? 0.07 : 0.02;

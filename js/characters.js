@@ -3,8 +3,9 @@
   const CVVH = window.CVVH = window.CVVH || {};
 
   const CANON_OVERRIDES = {
-    nhan:{ ageRole:"Du học sinh trao đổi từ Hong Kong", personality:"Điềm tĩnh, quan sát kỹ, hài khô", speakingStyle:"Tiếng Việt tốt, đôi lúc so sánh đời sống Việt Nam và Hong Kong", reason:"Khám phá đồ ăn đường phố Việt Nam bằng tinh thần thu thập dữ liệu", runningJoke:"Luôn cần thêm một mẫu thử trước khi kết luận", relations:["tram","thay-tung"] },
-    duong:{ ageRole:"Sinh viên ngành Công nghệ thông tin", personality:"Năng lượng, vui tính, thân thiện", speakingStyle:"Đùa bằng ngôn ngữ công nghệ và hay hỏi hôm nay có bạn nào xinh ghé", reason:"Ăn xế, sửa code và thu thập tin vui quanh quán", runningJoke:"Hỏi tình hình quán nhưng không phải tình hình cá viên", relations:["khanh","thay-tung"] },
+    nhan:{ ageRole:"Nữ du học sinh trao đổi từ Hong Kong", personality:"Điềm tĩnh, quan sát kỹ, hài khô", speakingStyle:"Tiếng Việt tốt, đôi lúc so sánh đời sống Việt Nam và Hong Kong", reason:"Khám phá đồ ăn đường phố Việt Nam bằng tinh thần thu thập dữ liệu", runningJoke:"Luôn cần thêm một mẫu thử trước khi kết luận", relations:["thay-tung"] },
+    duong:{ ageRole:"Sinh viên ngành Công nghệ thông tin", personality:"Năng lượng, vui tính, thân thiện", speakingStyle:"Đùa bằng ngôn ngữ công nghệ và đôi khi hỏi hôm nay có bạn nào xinh ghé", reason:"Ăn xế, sửa code và thu thập tin vui quanh quán", runningJoke:"Hỏi tình hình quán nhưng không phải tình hình cá viên", relations:["khanh","thay-tung"] },
+    thuy:{ ageRole:"Nam sinh học Công nghệ thông tin, bạn cùng lớp Dương", personality:"Hiền, tốt bụng, rất rõ là thích chị Thảo", speakingStyle:"Chân thành, dễ lúng túng khi bị Dương hoặc Thảo trêu", reason:"Ăn xế, giúp việc lặt vặt và tìm mọi lý do để ghé chị Thảo", runningJoke:"Không ai còn tin Thủy tới quán chỉ vì cá viên; ai cũng biết em thích chị Thảo", relations:["duong","trang","tran"] },
     "co-thao":{ name:"Cô Diệp", ageRole:"Giáo viên kỹ năng hư cấu", personality:"Vui vẻ, nhanh nhẹn, hay khích lệ", speakingStyle:"Nói gọn và luôn kéo học sinh về điều tích cực" },
     quy:{ relations:["trang","tran","khanh","chu-sau"] },
     han:{ relations:["an","vu"] },
@@ -17,7 +18,7 @@
     return Object.freeze(data);
   }
 
-  const characters = [
+  const allCharacters = [
     npc({ id:"khanh", name:"Khánh", avatar:"./assets/characters/khanh.svg", ageRole:"Học sinh mê ẩm thực", personality:"Vui vẻ, tự tin, cực kỳ nghiêm túc với đồ ăn", speakingStyle:"Hào hứng như nhà phê bình ẩm thực", reason:"Thử mọi món và mọi công thức sốt", runningJoke:"Luôn khẳng định phần rất lớn chỉ là phần giảm ăn", arc:"Từ khách khó tính thành người giúp quầy xây thực đơn", relations:["duong","quy"], favoriteFood:null, dislikedFood:null, preferredSauce:"sot-mix", patienceMultiplier:1.15, portionSizeWeight:"high", schedule:"recess", storyEvents:["khanh-second-order","menu-tasting"], dialogue:{
       firstVisit:["Chị nói thiệt đi, phần này là phần thường hay phần thử lòng người?"],
       normal:["Em không ăn nhiều. Em chỉ ăn đúng nhu cầu.","Khoan, sốt hôm nay pha khác hôm qua đúng không?","Em đang giảm ăn rồi đó chị.","Bốn phần là giảm rồi.","Phần này thơm. Em đánh giá cao sự nghiêm túc.","Cho em món nào giòn nhất hôm nay.","Em tới kiểm tra chất lượng định kỳ.","Một xiên chỉ là lời chào, chưa phải bữa ăn.","Chị cứ chiên, chuyện số lượng để em lo.","Em đã chuẩn bị tinh thần cho khay lớn.","Mùi này làm em quên luôn tiết sau.","Sốt mix phải cân bằng, không được thiên vị.","Dương no rồi, còn em thì mới khởi động.","Em ăn tiếp để món trước không cô đơn.","Hôm nay quầy đạt chuẩn Khánh."],
@@ -108,6 +109,11 @@
       firstVisit:["Cho anh phần như hôm qua... à, hôm nay là lần đầu."], normal:["Bốn giờ ba mươi bảy.","Anh tới sớm một phút.","Vẫn tổ hợp ngẫu nhiên đó nhé.","Đừng hỏi sao anh nhớ giờ.","Chú Sáu vẫn còn làm ở đây à?","Khúc đường này thay đổi nhiều.","Mùi đồ chiên thì không đổi mấy.","Cho anh thêm sốt mix.","Hôm nay anh chỉ ghé nhanh.","Anh từng đứng chờ ở đây lâu lắm.","Biệt danh 4:37 nghe cũng được.","Chị Hồng đoán sai nghề anh rồi.","Một ngày nào đó anh kể.","Mưa xuống y như hồi đó.","Cảm ơn vì vẫn mở giờ này."], highRelationship:["Anh từng là học sinh ở đây. 4:37 là giờ bạn anh tan đội tuyển.","Mái che mới coi như quà của một khách quen."], fastService:["Vẫn kịp giờ."], slowService:["Anh từng chờ lâu hơn vậy nhiều."], wrongOrder:["Không sao, tổ hợp của anh vốn đã khó nhớ."], rain:["Ngày đó cũng mưa như vầy."], exams:["Hồi thi anh cũng ghé đúng giờ này."], graduation:["Có người rời trường rồi vẫn quay về."]
     }})
   ];
+
+  /* Cast cleanup requested for the current edition: three students and half of
+     the teacher roster are retired without breaking older save files. */
+  const REMOVED_CHARACTER_IDS = new Set(["tram", "my", "gia-huy", "co-thao", "thay-phong", "thay-khoi"]);
+  const characters = allCharacters.filter(function (character) { return !REMOVED_CHARACTER_IDS.has(character.id); });
 
   function stage(points) {
     if (points >= 40) return "BEST CUSTOMER";

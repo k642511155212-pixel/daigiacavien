@@ -10,8 +10,8 @@
     vu:{ han:"crush", duong:"friend" },
     han:{ vu:"schoolmate", an:"friend" },
     duong:{ vu:"friend", khanh:"friend", "thay-tung":"teacher" },
-    thuy:{ trang:"friend", tran:"friend", thao:"crush" },
-    nhan:{ tram:"friend", "thay-tung":"teacher" }
+    thuy:{ trang:"friend", tran:"friend", duong:"classmate", thao:"crush" },
+    nhan:{ "thay-tung":"teacher" }
   });
 
   const BOOK = Object.freeze({
@@ -20,7 +20,7 @@
     trang:{ trait:"BEST FRIEND", tagline:"Một phần của bộ ba Quý–Trang–Trân.", description:"Thẳng thắn, nhanh nhẹn và luôn biết hai bạn thân đang giấu chuyện gì." },
     tran:{ trait:"SECRET KEEPER?", tagline:"Bí mật thường tồn tại được khoảng ba phút.", description:"Lém lỉnh, tình cảm và là bạn thân lâu năm của Quý với Trang." },
     quy:{ trait:"ONE MINUTE LEFT", tagline:"Lúc nào cũng còn đúng một phút.", description:"Bạn thân của Trang và Trân. Không quen Vũ, nhưng rất quen chạy trễ." },
-    thuy:{ trait:"STALL PROMOTER", tagline:"Một khách hàng cực kỳ nhiệt tình với chị Thảo.", description:"Năng nổ, có đời sống CLB bận rộn và giấu việc mê chị Thảo không hề tốt." },
+    thuy:{ trait:"OBVIOUS CRUSH", tagline:"Nam sinh IT nói nhớ cá viên. Không ai còn tin.", description:"Bạn cùng lớp của Dương, hiền và tốt bụng. Thủy rất thích chị Thảo; Thủy nghĩ mình giấu khá tốt. Thủy không giấu tốt." },
     duong:{ trait:"TECH TALK", tagline:"Học IT. Hay hỏi hôm nay có bạn nào xinh ghé.", description:"Vui tính, thích code, đồ chiên và những dữ liệu xã hội hoàn toàn vô hại." },
     vu:{ trait:"HÂN ĐÂU RỒI?", tagline:"Bình thường khá tự nhiên, cho tới khi ai đó nhắc Hân.", description:"Nói chuyện tự tin, riêng chủ đề Hân thì hệ thống thường mất ổn định." },
     han:{ trait:"QUIETLY SHARP", tagline:"??? customer approaching…", description:"Điềm tĩnh, thân thiện, tinh ý và có câu chuyện riêng ngoài Vũ." },
@@ -165,7 +165,7 @@
     thuy:["Chị làm gì cũng nhanh hết á.", "Ngon lắm chị. Chị nhớ ăn tối nha."],
     vu:["Đúng món rồi. À... Hân chưa tới hả chị?", "Cảm ơn chị. Em ngồi đây một chút thôi."],
     han:["Ngon lắm chị. Hôm nay em chọn đúng.", "Cảm ơn chị, em đi làm việc của em đây."],
-    khanh:["Được. Khởi động xong.", "Phần này đạt chuẩn Khánh."],
+    khanh:["Ngon cỡ Poseidon.", "Được. Khởi động xong.", "Phần này đạt chuẩn Khánh."],
     hoc:["Ngon. Giờ em hết lý do chưa học rồi.", "Ăn xong em học thiệt."],
     tho:["Ổn. Gọn và đúng món.", "Cảm ơn em. Hôm nay chị chỉ là khách."],
     trang:["Đúng rồi chị. Em mang phần này đi tìm hai đứa kia."],
@@ -199,7 +199,7 @@
   function seedForProgress(day, reputation) {
     const mock = { stats:{ totalCustomersServed:Math.max(0, (day - 1) * 3) }, story:{ flags:{ vuAskedAboutHan:day >= 4 ? 2 : 0 } } };
     const ids = INITIAL_UNLOCKS.slice();
-    Object.keys(UNLOCK_RULES).forEach(function (id) { if (UNLOCK_RULES[id](mock, day, reputation)) ids.push(id); });
+    Object.keys(UNLOCK_RULES).forEach(function (id) { if (CVVH.Characters.getById(id) && UNLOCK_RULES[id](mock, day, reputation)) ids.push(id); });
     return Array.from(new Set(ids));
   }
 
@@ -207,7 +207,7 @@
     ensure(save);
     const unlocked = [];
     Object.keys(UNLOCK_RULES).forEach(function (id) {
-      if (!save.unlockedCharacters.includes(id) && UNLOCK_RULES[id](save, day, reputation)) {
+      if (CVVH.Characters.getById(id) && !save.unlockedCharacters.includes(id) && UNLOCK_RULES[id](save, day, reputation)) {
         save.unlockedCharacters.push(id);
         save.characterBook[id] = save.characterBook[id] || { unlockedAtDay:day, updated:true };
         unlocked.push(id);
@@ -242,6 +242,7 @@
     const weighted = pool.map(function (character) {
       let weight = (save.characterVisits[character.id] || 0) === 0 ? 1.8 : 1;
       if (character.id === last) weight *= .18;
+      if (character.id === "khanh") weight *= 2.65;
       if (character.id === "vu" && !save.unlockedCharacters.includes("han")) weight *= 2.4;
       if (character.id === "han" && (save.characterVisits.han || 0) < 2) weight *= 2;
       if (character.id === "tho" && Number(save.story.flags.foodSafetyProgress || 0) < 2) weight *= 1.7;
@@ -255,12 +256,12 @@
     return weighted[weighted.length - 1].character;
   }
 
-  function orderSignature(order) { return order.items.slice().sort().join("+") + "|" + order.sauce; }
+  function orderSignature(order) { return order.items.slice().sort().join("+") + "|" + order.sauce + "|" + (order.drink || "none"); }
 
   function generateOrder(save, character, day, availableFoods, maxItems, random, tutorialOrder) {
     ensure(save);
     const rng = random || Math.random;
-    if (tutorialOrder) return { items:["ca-vien"], sauce:"tuong-ot" };
+    if (tutorialOrder) return { items:["ca-vien"], sauce:"tuong-ot", drink:"none" };
     const history = save.recentOrders[character.id] || [];
     let candidate = null;
     for (let attempt = 0; attempt < 10; attempt += 1) {
@@ -271,6 +272,10 @@
       else if ((character.portionSizeWeight === "group" || character.id === "co-lan") && rng() > .55) desired = Math.min(maxItems, Math.max(desired, 3));
       while (candidate.items.length < desired) candidate.items.push(availableFoods[Math.floor(rng() * availableFoods.length)].id);
       if (character.preferredSauce && rng() < .28) candidate.sauce = character.preferredSauce;
+      if (character.id === "khanh" && candidate.drink === "none" && rng() < .82) {
+        const drinks = CVVH.Config.DRINKS.filter(function (drink) { return drink.id !== "none" && drink.unlockDay <= day; });
+        if (drinks.length) candidate.drink = drinks[Math.floor(rng() * drinks.length)].id;
+      }
       if (!history.includes(orderSignature(candidate))) break;
     }
     return candidate;

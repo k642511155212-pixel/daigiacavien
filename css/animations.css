@@ -15,6 +15,9 @@
 @keyframes order-reveal { from{opacity:0;transform:translate(-50%,8px) scale(.82)} to{opacity:1;transform:translateX(-50%) scale(1)} }
 @keyframes unlock-pop { from{opacity:0;transform:scale(.72) translateY(24px)} to{opacity:1;transform:none} }
 @keyframes portrait-bounce { 0%{transform:scale(.55) rotate(-7deg)} 65%{transform:scale(1.08) rotate(2deg)} 100%{transform:none} }
+@keyframes khanh-march { from{transform:translateX(-15%)}to{transform:translateX(52%)} }
+@keyframes warning-pop { from{transform:translate(-50%,-50%) rotate(-8deg) scale(.86)}to{transform:translate(-50%,-50%) rotate(8deg) scale(1.08)} }
+@keyframes screen-rumble { 0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-1px)} }
 @keyframes coin-burst { to{transform:translate(var(--tx),var(--ty)) rotate(500deg) scale(.4);opacity:0} }
 .coin-particle { position:fixed;z-index:850;width:16px;height:16px;border:2px solid var(--brown);border-radius:50%;background:var(--gold);pointer-events:none;animation:coin-burst .75s ease-out forwards; }
 .sparkle-particle { position:fixed;z-index:850;color:#fff16a;font-size:1.3rem;text-shadow:0 2px 0 var(--brown);pointer-events:none;animation:float-up .85s ease-out forwards; }

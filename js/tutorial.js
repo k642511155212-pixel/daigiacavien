@@ -12,8 +12,9 @@
         { title: "Cho cá viên vào chảo", text: "Bấm nguyên liệu Cá viên. Trò chơi sẽ tự tìm một ô chảo trống.", target: "[data-food-id='ca-vien']", action: "fry:ca-vien" },
         { title: "Chờ món chín", text: "Theo dõi nhãn và thanh tiến độ. Khi món chuyển sang SẴN SÀNG, hãy lấy ra thật nhanh.", target: ".fryer-slot:not(.empty)", action: "ready" },
         { title: "Lấy món ra khay", text: "Bấm vào ô chảo đang phát sáng để chuyển cá viên sang khay phục vụ.", target: ".fryer-slot.ready", action: "collect" },
-        { title: "Thêm tương ớt", text: "Bấm chai Tương ớt. Viền xanh cho biết sốt đã được chọn.", target: "[data-sauce-id='tuong-ot']", action: "sauce:tuong-ot" },
-        { title: "Phục vụ khách", text: "Chọn vị khách đầu tiên, rồi bấm PHỤC VỤ. Món và sốt phải khớp hoàn toàn.", target: "#serve-btn", action: "served" }
+        { title: "Thêm tương ớt", text: "Bấm chai Tương ớt. Viền sáng cho biết sốt đã được chọn.", target: "[data-sauce-id='tuong-ot']", action: "sauce:tuong-ot" },
+        { title: "Kiểm tra đồ uống", text: "Đơn này không gọi trà, hãy chọn Không nước ở trạm pha.", target: "[data-drink-id='none']", action: "drink:none" },
+        { title: "Phục vụ khách", text: "Bấm PHỤC VỤ. Món, sốt và ly trà phải khớp hoàn toàn.", target: "#serve-btn", action: "served" }
       ];
       this.overlay = document.getElementById("tutorial-overlay");
       this.title = document.getElementById("tutorial-title");

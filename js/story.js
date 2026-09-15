@@ -34,8 +34,8 @@
       { name:"Thảo", avatar:"./assets/ui/cart.svg", text:"Chiếc chảo nhỏ nóng lên. Ngày đầu tiên của quầy Cá Viên Vỉa Hè bắt đầu." }
     ]},
     chapter2:{ id:"chapter2", title:"Quán mới trước cổng trường", lines:[
-      { name:"Gia Huy", avatar:avatar("gia-huy"), text:"Chị ơi, đây có phải quầy bí mật mấy anh chị khối trên hay nói không?" },
-      { name:"Trâm", avatar:avatar("tram"), text:"Không bí mật nữa. Em đã đưa vào danh sách ăn xế của lớp rồi." },
+      { name:"Trang", avatar:avatar("trang"), text:"Trân nói đây là quầy bí mật ngon nhất khúc này." },
+      { name:"Trân", avatar:avatar("tran"), text:"Em nói nhỏ thôi mà sao ai cũng biết rồi?" },
       { name:"Thảo", avatar:"./assets/ui/cart.svg", text:"Từ hôm đó, tôi bắt đầu nhớ tên khách trước cả khi nhớ đơn của họ." }
     ]},
     chapter3:{ id:"chapter3", title:"15 phút ra chơi", lines:[
@@ -66,7 +66,7 @@
       { name:"Chị Hồng", avatar:avatar("chi-hong"), text:"Mai thi tiếp. Hôm nay sống sót trước đã." }
     ]},
     graduation:{ id:"graduation", title:"Ngày tốt nghiệp", lines:[
-      { name:"Trâm", avatar:avatar("tram"), text:"Lần này không đặt cho lớp. Mọi người tự gọi món cuối cùng ở quầy." },
+      { name:"Trang", avatar:avatar("trang"), text:"Lần này không đặt theo nhóm. Tụi em tự gọi món cuối cùng ở quầy." },
       { name:"Khánh", avatar:avatar("khanh"), text:"“Cuối cùng” nghe nhỏ quá. Cho em hai phần." },
       { name:"Hân", avatar:avatar("han"), text:"Mai không còn tan học ở đây nữa... nhưng tụi em vẫn quay lại được mà." },
       { name:"Thảo", avatar:"./assets/ui/cart.svg", text:"Từ 300.000đ và một chiếc xe cũ, quầy đã thành điểm hẹn mà chẳng bảng kế hoạch nào dự đoán được." }
@@ -136,7 +136,7 @@
     { ids:["khanh","duong"], line:"Dương: “Mày mới ăn mà?” — Khánh: “Đó là chuyện của phần trước.”" },
     { ids:["quy","thay-minh"], line:"Thầy Minh: “Em đang vội à?” — Quý: “...dạ không ạ.”" },
     { ids:["quy","co-lan"], line:"Quý: “Cô không họp hả cô?” — Cô Lan: “Có. Cô cũng phải ăn.”" },
-    { ids:["thay-phong","co-mai"], line:"Thầy Phong: “Sốt quá nhiều.” — Cô Mai: “Đó gọi là cảm xúc.”" },
+    { ids:["duong","thay-tung"], line:"Dương: “Code em lỗi.” — Thầy Tùng: “Ăn xong sửa.”" },
     { ids:["chi-hong","thay-minh"], line:"Chị Hồng: “Thầy ăn bên này hả?” — Thầy Minh: “Thầy không tham gia cạnh tranh thương mại.”" },
     { ids:["vu","han"], line:"Vũ đang định nói gì đó thì Hân tới. Ba luận điểm của Vũ tự nhiên biến mất." }
   ];

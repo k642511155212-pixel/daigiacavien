@@ -22,7 +22,7 @@
       this.reward = order.items.reduce(function (sum, id) {
         const food = CVVH.Config.foodById(id);
         return sum + (food ? food.price : 0);
-      }, 0);
+      }, 0) + ((CVVH.Config.drinkById(order.drink || "none") || {}).price || 0);
     }
 
     update(deltaSeconds) {
@@ -36,8 +36,8 @@
     patienceRatio() { return Math.max(0, this.remainingPatience / this.maxPatience); }
   }
 
-  function create(day, availableFoods, modifiers, maxItems, tutorialOrder, save, event) {
-    const variant = tutorialOrder ? CVVH.Characters.getById("khanh") : CVVH.CharacterSystem.chooseCharacter(save, day, event, Math.random);
+  function create(day, availableFoods, modifiers, maxItems, tutorialOrder, save, event, forcedVariant) {
+    const variant = forcedVariant || (tutorialOrder ? CVVH.Characters.getById("khanh") : CVVH.CharacterSystem.chooseCharacter(save, day, event, Math.random));
     const order = CVVH.CharacterSystem.generateOrder(save, variant, day, availableFoods, maxItems, Math.random, tutorialOrder);
     const relation = Number(save.relationships[variant.id]) || 0;
     if (relation >= 22 && Math.random() < .14 && order.items.length < maxItems) {

@@ -1,44 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900">
-  <defs>
-    <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#563449"/><stop offset="1" stop-color="#f08a5c"/></linearGradient>
-    <linearGradient id="wall" x2="0" y2="1"><stop stop-color="#ffd99a"/><stop offset="1" stop-color="#e88e5b"/></linearGradient>
-    <linearGradient id="counter" x2="0" y2="1"><stop stop-color="#8d4731"/><stop offset="1" stop-color="#4d2c29"/></linearGradient>
-    <pattern id="brick" width="72" height="36" patternUnits="userSpaceOnUse"><path d="M0 0h72v36H0z" fill="#b85d4e"/><path d="M0 18h72M36 0v18M18 18v18" stroke="#8d423f" stroke-width="3" opacity=".48"/></pattern>
-    <filter id="glow"><feGaussianBlur stdDeviation="8"/></filter>
-  </defs>
-  <path fill="url(#sky)" d="M0 0h1440v900H0z"/>
-  <circle cx="290" cy="100" r="170" fill="#ffb756" opacity=".22" filter="url(#glow)"/>
-  <path fill="url(#brick)" d="M0 0h1440v590H0z" opacity=".9"/>
-  <path fill="#522c39" d="M0 0h1440v66H0z"/>
-  <path fill="#703643" d="M0 58h1440v35H0z"/>
-  <g stroke="#522c2b" stroke-width="7">
-    <path fill="#fff0d1" d="M0 90h1440v119H0z"/>
-    <path fill="#ef5f48" d="M0 90h120v119H0zm240 0h120v119H240zm240 0h120v119H480zm240 0h120v119H720zm240 0h120v119H960zm240 0h120v119h-120z"/>
-    <path fill="#ffc351" d="M0 198h1440v35H0z"/>
-  </g>
-  <g stroke="#61342b" stroke-width="7">
-    <path fill="url(#wall)" d="M48 255h426v310H48z"/><path fill="url(#wall)" d="M515 255h410v310H515z"/><path fill="url(#wall)" d="M966 255h426v310H966z"/>
-    <path fill="#8ad4d1" d="M78 285h366v208H78zM545 285h350v208H545z"/>
-    <path fill="#fff7d6" d="M85 292h352v74H85zm467 0h336v74H552z" opacity=".9"/>
-    <path fill="#9d493b" d="M995 286h368v249H995z"/>
-  </g>
-  <g opacity=".55" fill="#fff"><path d="M104 310h150l-126 135H92zM580 310h135L578 452h-18z"/></g>
-  <g stroke="#5b312a" stroke-width="6" stroke-linejoin="round">
-    <path fill="#56a876" d="M113 483q18-72 71-22 38-65 75 15v79H113z"/><path fill="#33805e" d="M340 490q22-70 58-11 28-32 46 11v65H340z"/>
-    <path fill="#f7ca74" d="M76 535h400v55H76zM516 535h410v55H516z"/>
-    <path fill="#84503c" d="M1050 321h260v51h-260z"/>
-    <path fill="#ffd67c" d="M1039 393h285v32h-285z"/>
-    <path fill="#d76443" d="M1062 424v86h54v-86m45 0v86h54v-86m45 0v86h42v-86"/>
-  </g>
-  <g fill="#ffe38e" stroke="#5f332a" stroke-width="4"><circle cx="1015" cy="286" r="17"/><circle cx="1078" cy="286" r="17"/><circle cx="1141" cy="286" r="17"/><circle cx="1204" cy="286" r="17"/><circle cx="1267" cy="286" r="17"/><circle cx="1330" cy="286" r="17"/></g>
-  <g stroke="#51302b" stroke-width="6">
-    <path fill="#53a8a3" d="M0 588h1440v312H0z"/><path fill="url(#counter)" d="M0 575h1440v94H0z"/><path fill="#d97843" d="M0 575h1440v28H0z"/>
-    <path fill="#326e73" d="M31 691h420v184H31zM481 691h450v184H481zM961 691h448v184H961z"/>
-  </g>
-  <g opacity=".32" fill="#b9fff4"><path d="M58 716h365v36H58zM510 716h393v36H510zM989 716h392v36H989z"/></g>
-  <g stroke="#543028" stroke-width="6">
-    <path fill="#f7d680" d="M246 520h139v54H246z"/><path fill="#e34d40" d="M271 480h30v47h-30z"/><path fill="#f7f2db" d="M315 470h30v57h-30z"/>
-    <path fill="#76b5ac" d="M668 492h128v83H668z"/><path fill="#ffd75f" d="M694 462h24v32h-24zM747 451h25v43h-25z"/>
-  </g>
-  <g fill="#ffd15c"><circle cx="140" cy="141" r="10"/><circle cx="203" cy="141" r="10"/><circle cx="423" cy="141" r="10"/><circle cx="660" cy="141" r="10"/><circle cx="902" cy="141" r="10"/><circle cx="1132" cy="141" r="10"/><circle cx="1360" cy="141" r="10"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" shape-rendering="crispEdges">
+  <path fill="#73d5dd" d="M0 0h1280v720H0z"/><path fill="#cff5e9" d="M0 90h1280v300H0z"/><path fill="#fff" d="M70 75h220v70H70zm860 30h270v68H930zM350 30h150v54H350z"/>
+  <path fill="#7ccf71" d="M0 360h1280v360H0z"/><path fill="#58ae63" d="M0 400h1280v320H0z"/><path fill="#d5b27b" d="M0 525h1280v195H0z"/><path fill="#c59661" d="M0 590h1280v18H0zM0 662h1280v18H0z"/>
+  <g stroke="#4f2a22" stroke-width="10"><path fill="#fff1aa" d="M235 192h830v365H235z"/><path fill="#ef643d" d="M235 192h830v70H235z"/><path fill="#f8f0bc" d="M268 262h764v220H268z"/><path fill="#2cb9ae" d="M268 394h764v88H268z"/><path fill="#ffcf42" d="M204 170h892v43H204z"/><path fill="#ef5638" d="M227 213h95v62h-95zm190 0h95v62h-95zm190 0h95v62h-95zm190 0h95v62h-95zm190 0h95v62h-95z"/><path fill="#fff4c8" d="M322 213h95v62h-95zm190 0h95v62h-95zm190 0h95v62h-95zm190 0h95v62h-95z"/><path fill="#ef643d" d="M310 482h680v75H310z"/></g>
+  <path fill="#fff" d="M320 294h180v74H320zm460 0h205v74H780z"/><path fill="#ffd653" d="M540 288h198v88H540z" stroke="#4f2a22" stroke-width="8"/><text x="639" y="345" text-anchor="middle" font-family="DejaVu Sans,Arial,sans-serif" font-size="41" font-weight="900" fill="#ef5638">CÁ VIÊN</text>
+  <g stroke="#4f2a22" stroke-width="8"><path fill="#815242" d="M65 440h96v210H65z"/><path fill="#50a66b" d="M22 414h183v92H22z"/><path fill="#815242" d="M1110 453h94v197h-94z"/><path fill="#55ac6b" d="M1062 421h190v101h-190z"/></g>
+  <g fill="#fff3bd" stroke="#4f2a22" stroke-width="7"><rect x="342" y="435" width="88" height="47"/><rect x="452" y="435" width="88" height="47"/><rect x="760" y="435" width="88" height="47"/><rect x="870" y="435" width="88" height="47"/></g>
 </svg>

@@ -190,3 +190,60 @@
 .profit-line { display:flex;justify-content:space-between;align-items:center;padding:15px 18px;border:3px solid var(--brown);border-radius:15px;background:linear-gradient(#78e783,#36b85e);color:#fff;text-shadow:0 2px 0 #26763d;font-weight:950; }
 .profit-line strong { font-size:1.5rem; }.profit-line.loss { background:linear-gradient(#f9776d,#d9433f);text-shadow:0 2px 0 #8b2828; }
 .unlock-message { padding:10px 14px;margin:13px 0 0;border:2px dashed var(--teal-dark);border-radius:12px;background:#d8fff4;color:var(--teal-dark);font-weight:900; }
+
+/* Original top-down pixel stall reinterpretation. */
+.game-screen { padding:8px; background:#3b3041; background-image:linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px);background-size:16px 16px; }
+.hud { min-height:64px;border-radius:6px;background:linear-gradient(#fff9d7,#ffd066);box-shadow:0 5px 0 #4f2a22; }
+.hud-stat { border-left:3px solid #d79b51; }
+.combo-box { border-radius:4px;box-shadow:3px 3px 0 #4f2a22; }
+.stall-scene { border-radius:5px;border-width:5px;box-shadow:0 9px 0 #211b27; background-color:#fff8dd;background-image:linear-gradient(45deg,#f2ead2 25%,transparent 25%,transparent 75%,#f2ead2 75%),linear-gradient(45deg,#f2ead2 25%,transparent 25%,transparent 75%,#f2ead2 75%);background-size:48px 48px;background-position:0 0,24px 24px; }
+.stall-scene::after { height:12px;bottom:0;background:#2c7d80;border-top:4px solid #4f2a22;z-index:10; }
+.pixel-awning { position:absolute;z-index:1;left:0;right:0;top:0;height:34px;display:grid;grid-template-columns:repeat(6,1fr);border-bottom:5px solid #4f2a22;background:#ffd453; }
+.pixel-awning i:nth-child(odd){background:#ef5a3d}.pixel-awning i{border-right:4px solid #4f2a22;clip-path:polygon(0 0,100% 0,100% 72%,50% 100%,0 72%)}
+.customer-zone { padding-top:38px;background:linear-gradient(180deg,rgba(91,211,207,.16),rgba(255,248,221,.2)); }
+.zone-heading { border-radius:4px;box-shadow:3px 3px 0 #4f2a22;background:#fff1ae; }
+.customers::before,.customers::after { content:"";position:absolute;top:65px;width:78px;height:78px;border:4px solid #4f2a22;background:#7bd0c7;box-shadow:inset 0 0 0 8px #cff4da,4px 4px 0 rgba(79,42,34,.35); }
+.customers::before{left:5%}.customers::after{right:5%}
+.customer-card { z-index:2; }
+.customer-avatar-wrap { border-radius:4px;box-shadow:5px 5px 0 #4f2a22;background:#68c9c6;image-rendering:pixelated; }
+.customer-avatar { image-rendering:pixelated; }
+.customer-name,.order-bubble { border-radius:4px;box-shadow:4px 4px 0 #4f2a22; }
+.order-bubble { width:min(320px,112%);background:#fffdf0; }
+.order-bubble::after { width:16px;height:16px;bottom:-11px; }
+.order-items { flex-wrap:nowrap; }
+.order-food { flex:0 0 40px;border-radius:4px;image-rendering:pixelated; }
+.order-sauce,.order-drink { display:flex;align-items:center;gap:3px;max-width:64px;padding:2px;background:#fff0bd;border:1px solid #b5753c; }
+.order-sauce img,.order-drink img { width:28px;height:34px;object-fit:contain;image-rendering:pixelated; }
+.order-sauce small,.order-drink small { font-size:.56rem;font-weight:900;line-height:1.1; }
+.patience { border-radius:2px;height:11px; }
+.counter-zone { position:relative;padding-top:20px;border-top:5px solid #4f2a22;background-color:#d29b73;background-image:linear-gradient(90deg,rgba(92,48,34,.16) 2px,transparent 2px),linear-gradient(rgba(92,48,34,.16) 2px,transparent 2px);background-size:44px 44px;box-shadow:inset 0 7px #f1c18d; }
+.counter-label { position:absolute;z-index:8;top:-13px;padding:3px 9px;border:2px solid #4f2a22;background:#ffcf4f;color:#4f2a22;font-size:.55rem;font-weight:950;letter-spacing:.08em;box-shadow:2px 2px 0 #4f2a22; }
+.counter-label--prep{left:3%}.counter-label--cook{left:39%}.counter-label--serve{right:11%}
+.counter-zone .game-panel { border-radius:5px!important;box-shadow:4px 4px 0 #4f2a22,inset 0 3px #fff; }
+.panel-title h2 { letter-spacing:.04em;line-height:1.25;padding-top:.08em; }
+.ingredient-button,.sauce-button,.drink-button { border-radius:4px!important;box-shadow:3px 3px 0 #4f2a22!important;image-rendering:pixelated; }
+.ingredient-button strong,.sauce-button span,.drink-button span { line-height:1.2; padding-block:.08em; }
+.ingredient-button img,.sauce-button img,.drink-button img,.fryer-food img,.tray-item img { image-rendering:pixelated; }
+.fryer-slots { border-radius:4px;background:#40515a;box-shadow:inset 0 0 0 5px #778791; }
+.fryer-slot { border-radius:3px; }
+.fryer-slot::before { border-radius:4px; }
+.service-row { grid-template-columns:minmax(104px,.82fr) minmax(104px,.82fr) minmax(170px,1.5fr) 58px;grid-template-areas:"drink sauce tray trash"; }
+.drink-panel{grid-area:drink;padding:9px}.sauce-panel{grid-area:sauce}.tray-panel{grid-area:tray}.trash-bin{grid-area:trash}
+.drinks,.sauces { display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));gap:5px; }
+.drink-button { min-height:58px;padding:3px 2px;border:2px solid #4f2a22;background:linear-gradient(#e8fff7,#8edfd4);cursor:pointer;font-weight:950;color:#4f2a22; }
+.drink-button img { display:block;width:30px;height:34px;margin:0 auto 1px;object-fit:contain; }
+.drink-button span { display:block;font-size:.5rem;line-height:1.05; }
+.drink-button.selected { background:#fff06a;outline:3px solid #fff;outline-offset:1px;transform:translateY(-1px); }
+.serving-tray { border-radius:4px;background:linear-gradient(#e9f6f5,#a7c6c9);box-shadow:inset 0 5px 0 #fff; }
+.tray-item { border-radius:3px; }
+.selected-customer-label { border-radius:3px; }
+.trash-bin { border-radius:4px; }
+.customer-dialogue { border-radius:5px;box-shadow:0 7px 0 #4f2a22; }
+
+.khanh-alert { position:fixed;inset:0;z-index:880;overflow:hidden;background:rgba(61,24,24,.52);pointer-events:none;display:grid;align-content:center;gap:24px; }
+.khanh-alert[hidden]{display:none}
+.khanh-warning-lane { width:130%;margin-left:-15%;padding:13px 0;border-block:5px solid #4f2a22;background:repeating-linear-gradient(135deg,#ffd437 0 22px,#ef503c 22px 44px);box-shadow:0 7px 0 rgba(54,24,20,.45);overflow:hidden;transform:rotate(-2deg); }
+.khanh-warning-lane span { display:block;width:max-content;padding:7px 22px;background:#fff5bd;border:4px solid #4f2a22;color:#d9362b;font-size:clamp(1.15rem,4vw,3.3rem);font-weight:950;line-height:1.25;text-shadow:3px 3px 0 #ffd04a;animation:khanh-march 1s linear 3; }
+.khanh-warning-lane--two{transform:rotate(2deg)}.khanh-warning-lane--two span{font-size:clamp(.8rem,2vw,1.6rem);color:#087b78;animation-direction:reverse}
+.khanh-warning-burst{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(8deg);display:grid;place-items:center;width:82px;height:82px;border:6px solid #4f2a22;background:#fff;color:#ef4a3e;font-size:3.5rem;font-weight:950;box-shadow:7px 7px 0 #ffd437;animation:warning-pop .45s ease-in-out infinite alternate}
+.khanh-shake .game-screen.active{animation:screen-rumble .16s linear 12}

@@ -24,10 +24,10 @@
   <main id="app" class="app-shell" aria-live="polite">
     <section id="menu-screen" class="screen menu-screen" aria-labelledby="game-title">
       <div class="menu-scene">
-        <div class="menu-sign">
+        <div class="menu-sign pixel-logo-stage">
           <img src="./assets/ui/logo.svg" alt="" aria-hidden="true">
           <h1 id="game-title" class="sr-only">Cá Viên Vỉa Hè</h1>
-          <p>Quầy nhỏ, đơn đông, tay phải thật nhanh!</p>
+          <p><span>BIÊN HÒA · ĐỒNG NAI</span> Quầy nhỏ, món giòn, chuyện vui mỗi chiều!</p>
         </div>
 
         <div class="menu-card game-panel">
@@ -61,7 +61,7 @@
       <header class="hud game-panel">
         <div class="hud-brand"><img src="./assets/ui/mini-logo.svg" alt="Cá Viên Vỉa Hè"></div>
         <div class="hud-stat"><span>Ngày</span><strong id="hud-day">1</strong></div>
-        <div class="hud-stat hud-stat--timer"><span>Thời gian</span><strong id="hud-time">01:15</strong><div class="mini-progress"><i id="day-time-bar"></i></div></div>
+        <div class="hud-stat hud-stat--timer"><span>Khách hôm nay</span><strong id="hud-time">0/4</strong><div class="mini-progress"><i id="day-time-bar"></i></div></div>
         <div class="hud-stat"><span>Tiền tạm tính</span><strong id="hud-money">35.000đ</strong></div>
         <div class="hud-stat"><span>Uy tín</span><strong id="hud-reputation">60</strong><div class="mini-progress mini-progress--rep"><i id="rep-bar"></i></div></div>
         <div id="combo-box" class="combo-box"><span>Combo</span><strong id="hud-combo">x1</strong></div>
@@ -72,11 +72,12 @@
       </header>
 
       <div class="stall-scene">
+        <div class="pixel-awning" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
         <section class="customer-zone" aria-labelledby="customer-heading">
           <div class="zone-heading">
             <h2 id="customer-heading">Khách đang chờ</h2>
             <span id="world-event">Ngày thường</span>
-            <span id="customer-count">0/2 khách</span>
+            <span id="customer-count">0/4 lượt</span>
           </div>
           <div id="customers" class="customers" role="list"></div>
           <div id="empty-customers" class="empty-customers">Nghe tiếng xe đẩy leng keng… khách sắp tới rồi!</div>
@@ -95,6 +96,9 @@
         </section>
 
         <section class="counter-zone" aria-label="Quầy chế biến">
+          <div class="counter-label counter-label--prep" aria-hidden="true">BÀN SƠ CHẾ</div>
+          <div class="counter-label counter-label--cook" aria-hidden="true">BẾP CHIÊN</div>
+          <div class="counter-label counter-label--serve" aria-hidden="true">QUẦY GIAO MÓN</div>
           <div class="ingredient-panel game-panel">
             <div class="panel-title"><h2>Nguyên liệu</h2><span>Bấm để cho vào chảo</span></div>
             <div id="ingredients" class="ingredients"></div>
@@ -106,6 +110,10 @@
           </div>
 
           <div class="service-row">
+            <div class="drink-panel game-panel">
+              <div class="panel-title"><h2>Trạm pha trà</h2><span>Chọn đúng ly khách gọi</span></div>
+              <div id="drinks" class="drinks"></div>
+            </div>
             <div class="sauce-panel game-panel">
               <div class="panel-title"><h2>Nước sốt</h2><span>Chọn đúng vị khách gọi</span></div>
               <div id="sauces" class="sauces"></div>
@@ -134,7 +142,7 @@
         <div class="modal-card pause-card" role="dialog" aria-modal="true" aria-labelledby="pause-title">
           <div class="pause-icon" aria-hidden="true">Ⅱ</div>
           <h2 id="pause-title">Tạm nghỉ một chút</h2>
-          <p>Bếp, đồng hồ và sự kiên nhẫn của khách đều đang dừng.</p>
+          <p>Bếp và sự kiên nhẫn của khách đều đang dừng.</p>
           <button id="resume-btn" class="game-button game-button--primary">Tiếp tục</button>
           <button id="quit-btn" class="game-button game-button--cream">Về menu</button>
         </div>
@@ -256,6 +264,12 @@
       <div class="unlock-trait">Trait: <strong id="unlock-trait">Regular Story</strong></div>
       <button id="unlock-continue-btn" class="game-button game-button--primary">Gặp khách</button>
     </div>
+  </div>
+
+  <div id="khanh-alert" class="khanh-alert" hidden aria-live="assertive" aria-label="Sự kiện Khánh đang tới">
+    <div class="khanh-warning-lane khanh-warning-lane--one"><span>⚠ KHÁNH BÉO ĐANG ĐỔ BỘ!!! 🍢</span></div>
+    <div class="khanh-warning-lane khanh-warning-lane--two"><span>TRẠM CHIÊN CHUẨN BỊ · KHAY LỚN SẴN SÀNG</span></div>
+    <div class="khanh-warning-burst" aria-hidden="true">!</div>
   </div>
 
   <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>

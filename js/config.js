@@ -4,11 +4,13 @@
 
   CVVH.Config = {
     SAVE_KEY: "caVienViaHeSave_v1",
-    VERSION: 2,
+    VERSION: 3,
     BALANCE: Object.freeze({
       startingMoney: 300000,
       startingReputation: 60,
       dayDuration: 75,
+      dailyCustomerBase: 4,
+      dailyCustomerMax: 14,
       firstSpawnDelay: 800,
       wrongOrderPenalty: 2000,
       leaveReputation: 3,
@@ -26,7 +28,22 @@
       { id: "ho-lo", name: "Hồ lô", shortName: "Hồ lô", image: "./assets/food/ho-lo.svg", cost: 4000, price: 16000, cookTime: 5000, burnTime: 3400, unlockDay: 3 },
       { id: "tom-vien", name: "Tôm viên", shortName: "Tôm viên", image: "./assets/food/tom-vien.svg", cost: 4800, price: 18500, cookTime: 4700, burnTime: 3000, unlockDay: 4 },
       { id: "dau-hu", name: "Đậu hũ", shortName: "Đậu hũ", image: "./assets/food/dau-hu.svg", cost: 2600, price: 10500, cookTime: 3600, burnTime: 2500, unlockDay: 5 },
-      { id: "khoai-tay", name: "Khoai tây", shortName: "Khoai tây", image: "./assets/food/khoai-tay.svg", cost: 2800, price: 11000, cookTime: 4100, burnTime: 3200, unlockDay: 5 }
+      { id: "khoai-tay", name: "Khoai tây", shortName: "Khoai tây", image: "./assets/food/khoai-tay.svg", cost: 2800, price: 11000, cookTime: 4100, burnTime: 3200, unlockDay: 5 },
+      { id: "muc-vien", name: "Mực viên", shortName: "Mực viên", image: "./assets/food/muc-vien.svg", cost: 4200, price: 16500, cookTime: 4800, burnTime: 3100, unlockDay: 2 },
+      { id: "ca-vien-pho-mai", name: "Cá viên phô mai", shortName: "Cá phô mai", image: "./assets/food/ca-vien-pho-mai.svg", cost: 5000, price: 19500, cookTime: 4400, burnTime: 2800, unlockDay: 3 },
+      { id: "ca-vien-trung-cut", name: "Cá viên trứng cút", shortName: "Cá trứng cút", image: "./assets/food/ca-vien-trung-cut.svg", cost: 5200, price: 20500, cookTime: 5100, burnTime: 3000, unlockDay: 4 },
+      { id: "ca-vien-trung-muoi", name: "Cá viên trứng muối", shortName: "Cá trứng muối", image: "./assets/food/ca-vien-trung-muoi.svg", cost: 5500, price: 21500, cookTime: 4900, burnTime: 2900, unlockDay: 5 },
+      { id: "cha-ca", name: "Chả cá", shortName: "Chả cá", image: "./assets/food/cha-ca.svg", cost: 3900, price: 15500, cookTime: 4500, burnTime: 3300, unlockDay: 2 },
+      { id: "thanh-cua", name: "Thanh cua", shortName: "Thanh cua", image: "./assets/food/thanh-cua.svg", cost: 3700, price: 15000, cookTime: 3900, burnTime: 2600, unlockDay: 3 },
+      { id: "ha-cao-chien", name: "Há cảo chiên", shortName: "Há cảo", image: "./assets/food/ha-cao-chien.svg", cost: 4300, price: 17500, cookTime: 4700, burnTime: 2900, unlockDay: 4 },
+      { id: "banh-gao-chien", name: "Bánh gạo chiên", shortName: "Bánh gạo", image: "./assets/food/banh-gao-chien.svg", cost: 3500, price: 14500, cookTime: 4200, burnTime: 3000, unlockDay: 5 }
+    ]),
+    DRINKS: Object.freeze([
+      { id:"none", name:"Không gọi nước", shortName:"Không nước", image:"./assets/drinks/no-drink.svg", cost:0, price:0, unlockDay:1 },
+      { id:"tra-chanh", name:"Trà chanh", shortName:"Chanh", image:"./assets/drinks/tra-chanh.svg", cost:3500, price:12000, unlockDay:1 },
+      { id:"tra-dao", name:"Trà đào", shortName:"Đào", image:"./assets/drinks/tra-dao.svg", cost:4500, price:16000, unlockDay:2 },
+      { id:"tra-tac", name:"Trà tắc", shortName:"Tắc", image:"./assets/drinks/tra-tac.svg", cost:3800, price:13000, unlockDay:3 },
+      { id:"tra-vai", name:"Trà vải", shortName:"Vải", image:"./assets/drinks/tra-vai.svg", cost:4800, price:17000, unlockDay:4 }
     ]),
     SAUCES: Object.freeze([
       { id: "tuong-ot", name: "Tương ớt", shortName: "Ớt", image: "./assets/ui/sauce-chili.svg", unlockDay: 1 },
@@ -49,4 +66,5 @@
 
   CVVH.Config.foodById = function (id) { return CVVH.Config.FOODS.find(function (food) { return food.id === id; }); };
   CVVH.Config.sauceById = function (id) { return CVVH.Config.SAUCES.find(function (sauce) { return sauce.id === id; }); };
+  CVVH.Config.drinkById = function (id) { return CVVH.Config.DRINKS.find(function (drink) { return drink.id === id; }); };
 })();

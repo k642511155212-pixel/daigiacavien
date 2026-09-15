@@ -10,17 +10,17 @@ Game quản lý thời gian thuần HTML/CSS/JavaScript về một quầy đồ 
 2. Bấm nguyên liệu để đưa vào một ô chảo trống.
 3. Theo dõi các trạng thái **Sống → Đang chiên → Sẵn sàng → Cháy**.
 4. Bấm món ở trạng thái **Sẵn sàng** để chuyển sang khay.
-5. Chọn đúng sốt và bấm **Phục vụ**; khách sẽ phản hồi trước khi rời quầy.
+5. Chọn đúng sốt, chọn ly trà hoặc **Không nước**, rồi bấm **Phục vụ**; khách sẽ phản hồi trước khi rời quầy.
 6. Dùng lợi nhuận nâng cấp quầy và mở thêm nhân vật trong **Sổ khách quen**.
 
 Đơn đúng tăng doanh thu, tiền boa, uy tín, quan hệ và combo. Đơn sai, khách bỏ đi hoặc món cháy sẽ làm mất combo và giảm kết quả cuối ngày. Doanh thu, giá vốn, tiền boa, tiền phạt và lợi nhuận được theo dõi riêng.
 
 ## Tính năng nổi bật
 
-- 8 món đồ chiên mở dần theo ngày, 5 loại sốt và đơn có món lặp lại.
+- 16 món đồ chiên mở dần theo ngày, 5 loại sốt, 4 loại trà và đơn có món lặp lại.
 - Từng ô chảo hoạt động độc lập, có khoảng thời gian lấy món trước khi cháy.
 - Khay phục vụ giới hạn dung lượng; cấp cao mở các đơn nhóm lớn.
-- 29 khách quen hư cấu thuộc nhiều nhóm: học sinh, giáo viên, phụ huynh, bảo vệ, cán bộ an toàn thực phẩm, tài xế và chủ quầy đối thủ.
+- 23 khách quen hư cấu thuộc nhiều nhóm: học sinh, giáo viên, phụ huynh, bảo vệ, cán bộ an toàn thực phẩm, tài xế và chủ quầy đối thủ.
 - Hội thoại ngắn trước khi lộ đơn, phản ứng sau đơn đúng/sai và tuyến truyện liên tục giữa các lượt ghé.
 - Canon riêng cho bộ ba Quý–Trang–Trân, Nhân từ Hong Kong, Thủy mê chị Thảo, Dương học IT, Vũ–Hân, Khánh, Học và Thơ.
 - Sổ khách quen hiển thị chân dung, mô tả động, lượt ghé, trait và 5 cấp quan hệ.
@@ -29,10 +29,12 @@ Game quản lý thời gian thuần HTML/CSS/JavaScript về một quầy đồ 
 - 6 chương truyện ngắn tại Biên Hòa và chế độ vô tận từ ngày 18.
 - Sự kiện: giờ ra chơi, tan trường, mưa chiều, tuần thi, hội thao, ngày CLB, Valentine, tốt nghiệp và Food Street Rush.
 - Quan hệ 5 cấp: Khách mới, Khách quen, Thân thuộc, Bạn của quầy, Khách ruột.
-- Đơn thứ hai đặc biệt của Khánh và tuyến khách bí ẩn “Anh 4:37”.
+- Khánh xuất hiện thường xuyên hơn, gọi phần lớn, boa hào phóng, có đơn thứ hai và cảnh báo “KHÁNH BÉO ĐANG ĐỔ BỘ!!!”.
+- Mỗi ngày có chỉ tiêu lượt khách tăng dần từ 4 tới tối đa 14, luôn giữ vòng chơi một khách tại một thời điểm.
 - 8 nhánh nâng cấp có giá tăng theo cấp và hiệu ứng áp dụng trực tiếp vào gameplay.
 - Hướng dẫn tương tác lần đầu, tạm dừng, thống kê dài hạn, âm thanh Web Audio và lưu tự động.
-- Giao diện co giãn cho desktop, tablet và điện thoại; có hỗ trợ bàn phím và focus rõ ràng.
+- Giao diện quầy bếp pixel-art góc nhìn từ trên xuống, co giãn cho desktop, tablet và điện thoại; có hỗ trợ bàn phím và focus rõ ràng.
+- Typography dùng bộ fallback hỗ trợ đầy đủ dấu tiếng Việt, không tải font hoặc tài nguyên ngoài.
 
 ## Điều khiển
 
@@ -58,7 +60,7 @@ Mọi đường dẫn trong game đều là đường dẫn tương đối nên 
 
 ## Lưu tiến trình
 
-Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và schema phiên bản 2. Dữ liệu gồm tiền, ngày, uy tín, nâng cấp, món/nhân vật đã mở, lượt ghé, 5 đơn gần nhất, Sổ khách quen, cờ truyện, quan hệ, chương và cảnh đã xem. Save phiên bản 1 được chuyển đổi an toàn; dữ liệu sai định dạng được phục hồi về cấu hình mặc định. Trạng thái đang chiên dở không được lưu.
+Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và schema phiên bản 3. Dữ liệu gồm tiền, ngày, uy tín, nâng cấp, món/nhân vật đã mở, lượt ghé, 5 đơn gần nhất, Sổ khách quen, cờ truyện, quan hệ, chương và cảnh đã xem. Save phiên bản cũ được chuyển đổi an toàn; dữ liệu sai định dạng được phục hồi về cấu hình mặc định. Trạng thái đang chiên dở không được lưu.
 
 ## Cấu trúc
 
@@ -90,6 +92,7 @@ Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và sc
 │   └── ui.js
 ├── assets/
     ├── food/
+    ├── drinks/
     ├── characters/
     ├── restaurant/
     ├── ui/
