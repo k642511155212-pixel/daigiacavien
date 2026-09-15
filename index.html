@@ -40,6 +40,7 @@
           <div class="menu-grid">
             <button id="how-btn" class="game-button game-button--cream">📖 Cách chơi</button>
             <button id="shop-btn" class="game-button game-button--cream">🛒 Nâng cấp</button>
+            <button id="book-btn" class="game-button game-button--cream">📖 Sổ khách quen</button>
             <button id="stats-btn" class="game-button game-button--cream">🏆 Thống kê</button>
             <button id="sound-btn" class="game-button game-button--cream" aria-pressed="false">🔊 Âm thanh</button>
           </div>
@@ -79,6 +80,18 @@
           </div>
           <div id="customers" class="customers" role="list"></div>
           <div id="empty-customers" class="empty-customers">Nghe tiếng xe đẩy leng keng… khách sắp tới rồi!</div>
+          <div id="customer-dialogue" class="customer-dialogue game-panel" hidden role="dialog" aria-modal="false" aria-labelledby="customer-dialogue-speaker">
+            <img id="customer-dialogue-avatar" src="./assets/ui/cart.svg" alt="">
+            <div class="customer-dialogue-copy">
+              <span id="customer-dialogue-progress" class="eyebrow">Trò chuyện</span>
+              <strong id="customer-dialogue-speaker">Khách</strong>
+              <p id="customer-dialogue-text"></p>
+              <div class="customer-dialogue-actions">
+                <button id="customer-dialogue-skip" class="text-button">Bỏ qua</button>
+                <button id="customer-dialogue-next" class="small-button small-button--bright">Tiếp</button>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section class="counter-zone" aria-label="Quầy chế biến">
@@ -106,7 +119,7 @@
               <div id="serving-tray" class="serving-tray" aria-label="Khay thức ăn đã nấu"></div>
               <div class="serve-controls">
                 <div id="selected-customer-label" class="selected-customer-label">Chọn một khách để phục vụ</div>
-                <button id="serve-btn" class="game-button game-button--primary" disabled>Phục vụ</button>
+                <button id="serve-btn" class="game-button game-button--primary" title="Bấm để xem bước còn thiếu">Phục vụ</button>
               </div>
             </div>
 
@@ -163,6 +176,15 @@
         <div><span>Dấu mốc tiếp theo</span><strong id="next-milestone">Phục vụ 10 khách</strong></div>
         <div class="achievement-progress"><i id="milestone-bar"></i></div>
       </div>
+    </section>
+
+    <section id="book-screen" class="screen secondary-screen" aria-labelledby="book-title">
+      <header class="secondary-header">
+        <button class="back-button" data-back-menu aria-label="Trở về menu">←</button>
+        <div><span class="eyebrow">Những câu chuyện quanh quầy</span><h1 id="book-title">Sổ khách quen</h1></div>
+        <div id="book-progress" class="wallet-chip">0/0 nhân vật</div>
+      </header>
+      <div id="character-book-grid" class="character-book-grid"></div>
     </section>
 
     <section id="end-screen" class="screen secondary-screen end-screen" aria-labelledby="end-title">
@@ -225,11 +247,23 @@
     </div>
   </div>
 
+  <div id="unlock-modal" class="modal-backdrop unlock-backdrop" hidden>
+    <div class="modal-card unlock-card" role="dialog" aria-modal="true" aria-labelledby="unlock-name">
+      <span class="unlock-kicker">🎉 Nhân vật mới!</span>
+      <div class="unlock-portrait-wrap"><img id="unlock-avatar" src="./assets/ui/cart.svg" alt=""></div>
+      <h2 id="unlock-name">Khách mới</h2>
+      <p id="unlock-tagline"></p>
+      <div class="unlock-trait">Trait: <strong id="unlock-trait">Regular Story</strong></div>
+      <button id="unlock-continue-btn" class="game-button game-button--primary">Gặp khách</button>
+    </div>
+  </div>
+
   <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
   <div id="float-layer" class="float-layer" aria-hidden="true"></div>
 
   <script defer src="./js/config.js"></script>
   <script defer src="./js/characters.js"></script>
+  <script defer src="./js/character-system.js"></script>
   <script defer src="./js/storage.js"></script>
   <script defer src="./js/audio.js"></script>
   <script defer src="./js/economy.js"></script>

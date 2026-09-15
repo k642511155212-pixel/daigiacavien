@@ -45,6 +45,7 @@
   CVVH.UI.byId("continue-btn").addEventListener("click", startGame);
   CVVH.UI.byId("how-btn").addEventListener("click", function () { CVVH.Audio.play("click"); CVVH.UI.openModal("how-modal"); });
   CVVH.UI.byId("shop-btn").addEventListener("click", openShop);
+  CVVH.UI.byId("book-btn").addEventListener("click", function () { CVVH.Audio.play("click"); CVVH.UI.renderCharacterBook(save); CVVH.UI.showScreen("book-screen"); });
   CVVH.UI.byId("stats-btn").addEventListener("click", function () { CVVH.Audio.play("click"); CVVH.UI.renderStats(save); CVVH.UI.showScreen("stats-screen"); });
   CVVH.UI.byId("sound-btn").addEventListener("click", toggleSound);
   CVVH.UI.byId("game-sound-btn").addEventListener("click", toggleSound);

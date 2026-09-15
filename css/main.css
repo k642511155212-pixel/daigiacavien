@@ -72,6 +72,7 @@ button:disabled { cursor: not-allowed; filter: grayscale(.35); opacity: .58; tra
 .menu-sign p { margin: 6px 0 0; font-size: 1.05rem; font-weight: 900; }
 .menu-card { padding: 22px; display: grid; gap: 12px; }
 .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.menu-grid #book-btn { grid-column: 1 / -1; }
 .menu-progress { align-self: stretch; padding: 18px; display: grid; gap: 10px; }
 .menu-progress div { padding: 13px 14px; border-radius: 14px; background: rgba(255,255,255,.55); border: 2px solid rgba(105,49,25,.16); display: flex; justify-content: space-between; align-items: center; }
 .menu-progress span { font-size: .86rem; font-weight: 900; color: var(--brown-2); }

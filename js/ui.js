@@ -8,6 +8,7 @@
     document.querySelectorAll(".screen").forEach(function (screen) {
       screen.classList.toggle("active", screen.id === id);
     });
+    document.body.classList.toggle("game-active", id === "game-screen");
     window.scrollTo(0, 0);
   }
 
@@ -73,22 +74,59 @@
     });
   }
 
+  function createFryerSlot(slot) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.dataset.slotIndex = slot.index;
+    button.dataset.foodId = slot.foodId || "";
+    if (slot.foodId) {
+      const food = CVVH.Config.foodById(slot.foodId);
+      const art = document.createElement("div"); art.className = "fryer-food"; art.appendChild(image(food.image, food.name)); button.appendChild(art);
+      const progress = document.createElement("div"); progress.className = "fryer-progress";
+      const fill = document.createElement("i"); progress.appendChild(fill); button.appendChild(progress);
+      const status = document.createElement("span"); status.className = "fryer-status"; button.appendChild(status);
+    }
+    return button;
+  }
+
+  function updateFryerButton(button, slot, enabled) {
+    const className = "fryer-slot " + slot.state;
+    if (button.className !== className) button.className = className;
+    button.dataset.foodId = slot.foodId || "";
+    button.disabled = !enabled || slot.state === "empty" || slot.state === "raw" || slot.state === "cooking";
+    button.setAttribute("aria-label", "Ô chảo " + (slot.index + 1) + ": " + stateLabels[slot.state]);
+    const fill = button.querySelector(".fryer-progress i");
+    if (fill) fill.style.width = Math.round(slot.progress * 100) + "%";
+    const status = button.querySelector(".fryer-status");
+    if (status) status.textContent = stateLabels[slot.state];
+  }
+
   function renderFryers(manager, enabled) {
-    const container = byId("fryer-slots"); container.textContent = "";
+    const container = byId("fryer-slots");
+    const expectedIndexes = new Set(manager.slots.map(function (slot) { return String(slot.index); }));
+    container.querySelectorAll("[data-slot-index]").forEach(function (button) {
+      if (!expectedIndexes.has(button.dataset.slotIndex)) button.remove();
+    });
     manager.slots.forEach(function (slot) {
-      const button = document.createElement("button");
-      button.className = "fryer-slot " + slot.state;
-      button.dataset.slotIndex = slot.index;
-      button.disabled = !enabled || slot.state === "empty" || slot.state === "raw" || slot.state === "cooking";
-      button.setAttribute("aria-label", "Ô chảo " + (slot.index + 1) + ": " + stateLabels[slot.state]);
-      if (slot.foodId) {
-        const food = CVVH.Config.foodById(slot.foodId);
-        const art = document.createElement("div"); art.className = "fryer-food"; art.appendChild(image(food.image, food.name)); button.appendChild(art);
-        const progress = document.createElement("div"); progress.className = "fryer-progress";
-        const fill = document.createElement("i"); fill.style.width = Math.round(slot.progress * 100) + "%"; progress.appendChild(fill); button.appendChild(progress);
-        const status = document.createElement("span"); status.className = "fryer-status"; status.textContent = stateLabels[slot.state]; button.appendChild(status);
+      let button = container.querySelector("[data-slot-index='" + slot.index + "']");
+      const foodId = slot.foodId || "";
+      if (!button || button.dataset.foodId !== foodId) {
+        const replacement = createFryerSlot(slot);
+        if (button) button.replaceWith(replacement); else container.appendChild(replacement);
+        button = replacement;
       }
-      container.appendChild(button);
+      updateFryerButton(button, slot, enabled);
+    });
+  }
+
+  function updateFryers(manager, enabled) {
+    const container = byId("fryer-slots");
+    const buttons = container.querySelectorAll("[data-slot-index]");
+    if (buttons.length !== manager.slots.length) { renderFryers(manager, enabled); return; }
+    manager.slots.forEach(function (slot) {
+      const button = container.querySelector("[data-slot-index='" + slot.index + "']");
+      if (!button || button.dataset.foodId !== (slot.foodId || "")) { renderFryers(manager, enabled); return; }
+      updateFryerButton(button, slot, enabled);
     });
   }
 
@@ -118,27 +156,77 @@
     sauceWrap.appendChild(image(sauce.image, sauce.name)); const label = document.createElement("small"); label.textContent = sauce.shortName; sauceWrap.appendChild(label); container.appendChild(sauceWrap);
   }
 
-  function renderCustomers(customers, selectedId, maxCustomers, enabled) {
-    const container = byId("customers"); container.textContent = "";
-    byId("empty-customers").hidden = customers.length > 0;
-    byId("customer-count").textContent = customers.length + "/" + maxCustomers + " khách";
-    customers.forEach(function (customer) {
+  function customerRenderKey(customer) {
+    return JSON.stringify([customer.name, customer.avatar, customer.speech, customer.reward, customer.order.items, customer.order.sauce, customer.relationshipStage, Boolean(customer.bonusSecond)]);
+  }
+
+  function createCustomerCard(customer) {
       const card = document.createElement("button");
-      card.type = "button"; card.className = "customer-card " + customer.status + (selectedId === customer.id ? " selected" : "");
-      card.dataset.customerId = customer.id; card.disabled = !enabled || customer.status === "leaving" || customer.status === "served";
+      card.type = "button"; card.className = "customer-card";
+      card.dataset.customerId = customer.id;
+      card.dataset.renderKey = customerRenderKey(customer);
       card.setAttribute("role", "listitem"); card.setAttribute("aria-label", "Chọn khách " + customer.name);
       const bubble = document.createElement("div"); bubble.className = "order-bubble";
       const head = document.createElement("div"); head.className = "order-head";
-      const wait = document.createElement("span"); wait.textContent = customer.status === "angry" ? "Sắp hết kiên nhẫn!" : (customer.speech || "Cho mình món này"); wait.title = customer.speech || "";
+      const wait = document.createElement("span"); wait.textContent = customer.speech || "Cho mình món này"; wait.title = customer.speech || "";
       const reward = document.createElement("span"); reward.textContent = CVVH.Economy.money(customer.reward);
       head.appendChild(wait); head.appendChild(reward); bubble.appendChild(head);
       const items = document.createElement("div"); items.className = "order-items"; appendOrderItems(items, customer.order); bubble.appendChild(items); card.appendChild(bubble);
       const avatarWrap = document.createElement("div"); avatarWrap.className = "customer-avatar-wrap"; avatarWrap.appendChild(image(customer.avatar, "Chân dung " + customer.name, "customer-avatar")); card.appendChild(avatarWrap);
-      const patience = document.createElement("div"); patience.className = "patience"; patience.setAttribute("aria-label", "Kiên nhẫn " + Math.round(customer.patienceRatio() * 100) + "%");
-      const fill = document.createElement("i"); const ratio = customer.patienceRatio(); fill.style.width = Math.round(ratio * 100) + "%"; fill.style.background = ratio > .65 ? "#45b85a" : ratio > .4 ? "#f0c441" : ratio > .2 ? "#ef8435" : "#e83c38"; patience.appendChild(fill); card.appendChild(patience);
+      const patience = document.createElement("div"); patience.className = "patience";
+      const fill = document.createElement("i"); patience.appendChild(fill); card.appendChild(patience);
       const name = document.createElement("span"); name.className = "customer-name"; name.textContent = customer.name + (customer.relationshipStage === "STRANGER" ? "" : " · " + CVVH.Characters.stageLabel(customer.relationshipStage)); card.appendChild(name);
-      container.appendChild(card);
+      return card;
+  }
+
+  function updateCustomerCard(card, customer, selectedId, enabled) {
+    const ratio = customer.patienceRatio();
+    const className = "customer-card " + customer.status + (selectedId === customer.id ? " selected" : "") + (customer.orderRevealed ? " order-revealed" : " order-hidden");
+    if (card.className !== className) card.className = className;
+    card.disabled = !enabled || customer.status === "leaving" || customer.status === "served";
+    card.setAttribute("aria-label", (selectedId === customer.id ? "Đang chọn khách " : "Chọn khách ") + customer.name);
+    const wait = card.querySelector(".order-head span:first-child");
+    if (wait) wait.textContent = customer.status === "angry" ? "Sắp hết kiên nhẫn!" : (customer.speech || "Cho mình món này");
+    const patience = card.querySelector(".patience");
+    const fill = card.querySelector(".patience i");
+    if (patience) patience.setAttribute("aria-label", "Kiên nhẫn " + Math.round(ratio * 100) + "%");
+    if (fill) {
+      fill.style.width = Math.round(ratio * 100) + "%";
+      fill.style.background = ratio > .65 ? "#45b85a" : ratio > .4 ? "#f0c441" : ratio > .2 ? "#ef8435" : "#e83c38";
+    }
+  }
+
+  function renderCustomers(customers, selectedId, maxCustomers, enabled) {
+    const container = byId("customers");
+    const activeIds = new Set(customers.map(function (customer) { return customer.id; }));
+    container.querySelectorAll("[data-customer-id]").forEach(function (card) {
+      if (!activeIds.has(card.dataset.customerId)) card.remove();
     });
+    customers.forEach(function (customer) {
+      let card = container.querySelector("[data-customer-id='" + customer.id + "']");
+      const renderKey = customerRenderKey(customer);
+      if (!card || card.dataset.renderKey !== renderKey) {
+        const replacement = createCustomerCard(customer);
+        if (card) card.replaceWith(replacement); else container.appendChild(replacement);
+        card = replacement;
+      }
+      updateCustomerCard(card, customer, selectedId, enabled);
+    });
+    byId("empty-customers").hidden = customers.length > 0;
+    byId("customer-count").textContent = customers.length + "/" + maxCustomers + " khách";
+  }
+
+  function updateCustomers(customers, selectedId, maxCustomers, enabled) {
+    const container = byId("customers");
+    const cards = container.querySelectorAll("[data-customer-id]");
+    if (cards.length !== customers.length) { renderCustomers(customers, selectedId, maxCustomers, enabled); return; }
+    for (const customer of customers) {
+      const card = container.querySelector("[data-customer-id='" + customer.id + "']");
+      if (!card || card.dataset.renderKey !== customerRenderKey(customer)) { renderCustomers(customers, selectedId, maxCustomers, enabled); return; }
+      updateCustomerCard(card, customer, selectedId, enabled);
+    }
+    byId("empty-customers").hidden = customers.length > 0;
+    byId("customer-count").textContent = customers.length + "/" + maxCustomers + " khách";
   }
 
   function updateHUD(game) {
@@ -160,8 +248,69 @@
 
   function updateServeState(selectedCustomer, trayLength, sauce, enabled) {
     const button = byId("serve-btn");
-    button.disabled = !enabled || !selectedCustomer || trayLength === 0 || !sauce;
-    byId("selected-customer-label").textContent = selectedCustomer ? "Đang phục vụ: " + selectedCustomer.name : "Chọn một khách để phục vụ";
+    const ready = Boolean(selectedCustomer && trayLength > 0 && sauce);
+    let hint = "Chọn một khách để phục vụ";
+    if (selectedCustomer && trayLength === 0) hint = selectedCustomer.name + " đã được chọn · Lấy món chín ra khay";
+    else if (selectedCustomer && !sauce) hint = selectedCustomer.name + " đã được chọn · Chọn nước sốt";
+    else if (ready) hint = "Sẵn sàng phục vụ " + selectedCustomer.name;
+    button.disabled = !enabled;
+    button.classList.toggle("is-ready", ready);
+    button.title = enabled ? (ready ? "Giao khay cho " + selectedCustomer.name : "Bấm để xem bước còn thiếu") : "Trò chơi đang tạm dừng";
+    button.setAttribute("aria-label", button.title);
+    byId("selected-customer-label").textContent = hint;
+  }
+
+  function playCustomerDialogue(lines, options, done) {
+    const panel = byId("customer-dialogue");
+    const nextButton = byId("customer-dialogue-next");
+    const skipButton = byId("customer-dialogue-skip");
+    const settings = options || {};
+    let index = 0;
+    let finished = false;
+    function finish() {
+      if (finished) return;
+      finished = true;
+      panel.hidden = true;
+      nextButton.onclick = null;
+      skipButton.onclick = null;
+      if (typeof done === "function") done();
+    }
+    function renderLine() {
+      const current = lines[index];
+      byId("customer-dialogue-progress").textContent = (settings.phase || "Trò chuyện") + " · " + (index + 1) + "/" + lines.length;
+      byId("customer-dialogue-speaker").textContent = current.speaker;
+      byId("customer-dialogue-text").textContent = current.text;
+      const avatar = byId("customer-dialogue-avatar");
+      avatar.src = current.avatar || "./assets/ui/cart.svg";
+      avatar.alt = "Chân dung " + current.speaker;
+      nextButton.textContent = index === lines.length - 1 ? (settings.finalLabel || "Xem đơn") : "Tiếp";
+    }
+    panel.hidden = false;
+    skipButton.hidden = settings.allowSkip === false;
+    nextButton.onclick = function () {
+      CVVH.Audio.play("click");
+      if (index >= lines.length - 1) { finish(); return; }
+      index += 1; renderLine();
+    };
+    skipButton.onclick = function () { CVVH.Audio.play("click"); finish(); };
+    renderLine();
+    nextButton.focus();
+  }
+
+  function showUnlock(details, done) {
+    const modal = byId("unlock-modal");
+    const avatar = byId("unlock-avatar");
+    avatar.src = details.avatar; avatar.alt = "Chân dung " + details.name;
+    byId("unlock-name").textContent = details.name;
+    byId("unlock-tagline").textContent = details.tagline;
+    byId("unlock-trait").textContent = details.trait;
+    const button = byId("unlock-continue-btn");
+    button.onclick = function () {
+      CVVH.Audio.play("upgrade"); modal.hidden = true; button.onclick = null;
+      if (typeof done === "function") done();
+    };
+    modal.hidden = false;
+    button.focus();
   }
 
   function toast(message, type) {
@@ -231,6 +380,31 @@
     byId("milestone-bar").style.width = Math.min(100, (served - previous) / Math.max(1, next - previous) * 100) + "%";
   }
 
+  function renderCharacterBook(save) {
+    const entries = CVVH.CharacterSystem.bookEntries(save);
+    const unlockedCount = entries.filter(function (entry) { return entry.unlocked; }).length;
+    byId("book-progress").textContent = unlockedCount + "/" + entries.length + " nhân vật";
+    const grid = byId("character-book-grid"); grid.textContent = "";
+    entries.forEach(function (entry) {
+      const card = document.createElement("article");
+      card.className = "book-card game-panel" + (entry.unlocked ? "" : " locked");
+      if (!entry.unlocked) {
+        const mystery = document.createElement("div"); mystery.className = "book-mystery"; mystery.textContent = "?";
+        const name = document.createElement("h2"); name.textContent = "???";
+        const hint = document.createElement("p"); hint.textContent = "Tiếp tục bán để gặp nhân vật này.";
+        card.append(mystery, name, hint); grid.appendChild(card); return;
+      }
+      const portrait = image(entry.avatar, "Chân dung " + entry.name, "book-portrait");
+      const body = document.createElement("div"); body.className = "book-copy";
+      const name = document.createElement("h2"); name.textContent = entry.name;
+      const trait = document.createElement("span"); trait.className = "book-trait"; trait.textContent = entry.trait;
+      const description = document.createElement("p"); description.textContent = entry.description;
+      const stars = document.createElement("div"); stars.className = "book-stars"; stars.setAttribute("aria-label", entry.stars + " trên 5 sao quan hệ"); stars.textContent = "★".repeat(entry.stars) + "☆".repeat(5 - entry.stars);
+      const stats = document.createElement("small"); stats.textContent = "Lượt ghé: " + entry.visits + " · " + CVVH.Characters.stageLabel(entry.stage);
+      body.append(name, trait, description, stars, stats); card.append(portrait, body); grid.appendChild(card);
+    });
+  }
+
   function renderEnd(day, summary, unlocked) {
     byId("end-title").textContent = "Tổng kết ngày " + day;
     const profit = summary.revenue + summary.tips - summary.ingredientCosts - summary.penalties;
@@ -252,8 +426,9 @@
   CVVH.UI = {
     byId: byId, showScreen: showScreen, openModal: openModal, closeModal: closeModal, renderMenu: renderMenu,
     setSoundButtons: setSoundButtons, renderIngredients: renderIngredients, renderSauces: renderSauces,
-    renderFryers: renderFryers, renderTray: renderTray, renderCustomers: renderCustomers, updateHUD: updateHUD,
-    updateServeState: updateServeState, toast: toast, floating: floating, coinBurst: coinBurst, sparkle: sparkle,
-    renderShop: renderShop, renderStats: renderStats, renderEnd: renderEnd
+    renderFryers: renderFryers, updateFryers: updateFryers, renderTray: renderTray, renderCustomers: renderCustomers, updateCustomers: updateCustomers, updateHUD: updateHUD,
+    updateServeState: updateServeState, playCustomerDialogue: playCustomerDialogue, showUnlock: showUnlock,
+    toast: toast, floating: floating, coinBurst: coinBurst, sparkle: sparkle,
+    renderShop: renderShop, renderStats: renderStats, renderCharacterBook: renderCharacterBook, renderEnd: renderEnd
   };
 })();

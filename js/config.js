@@ -4,7 +4,7 @@
 
   CVVH.Config = {
     SAVE_KEY: "caVienViaHeSave_v1",
-    VERSION: 1,
+    VERSION: 2,
     BALANCE: Object.freeze({
       startingMoney: 300000,
       startingReputation: 60,

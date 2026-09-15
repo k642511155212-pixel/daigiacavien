@@ -8,6 +8,7 @@
       this.callbacks = callbacks || {};
       this.active = false;
       this.paused = false;
+      this.conversationActive = false;
       this.ending = false;
       this.customers = [];
       this.tray = [];
@@ -61,7 +62,7 @@
       this.pendingTutorial = !this.save.tutorialCompleted;
       this.summary = { served: 0, lost: 0, incorrect: 0, burnt: 0, revenue: 0, ingredientCosts: 0, tips: 0, penalties: 0, bestCombo: 0, score: 0, reputationChange: 0 };
       this.combo = 0;
-      this.active = true; this.paused = false; this.ending = false;
+      this.active = true; this.paused = false; this.conversationActive = false; this.ending = false;
       this.availableFoods = CVVH.Config.FOODS.filter((food) => food.unlockDay <= this.day);
       this.currentEvent = CVVH.Story.eventForDay(this.day);
       this.fryer = new CVVH.Cooking.FryerManager(this.modifiers.fryerCapacity, this.modifiers, {
@@ -71,7 +72,8 @@
       CVVH.Storage.save(this.save);
       CVVH.UI.showScreen("game-screen");
       CVVH.UI.byId("pause-overlay").hidden = true;
-      this.spawnCustomer(this.pendingTutorial);
+      CVVH.UI.byId("customer-dialogue").hidden = true;
+      CVVH.UI.byId("unlock-modal").hidden = true;
       this.renderAll(true);
       const scene = CVVH.Story.sceneForDay(this.day, this.save);
       if (scene) {
@@ -81,9 +83,9 @@
           CVVH.Story.markScene(this.save, completedScene);
           CVVH.Storage.save(this.save);
           this.paused = false; this.lastTime = performance.now(); this.renderAll(true);
-          if (this.pendingTutorial) this.tutorial.start();
+          this.spawnCustomer(this.pendingTutorial);
         });
-      } else if (this.pendingTutorial) this.tutorial.start();
+      } else this.spawnCustomer(this.pendingTutorial);
       this.lastTime = performance.now();
       this.raf = window.requestAnimationFrame((time) => this.loop(time));
     }
@@ -98,7 +100,7 @@
       if (!this.active) return;
       const deltaMs = Math.min(100, Math.max(0, timestamp - this.lastTime));
       this.lastTime = timestamp;
-      if (!this.paused) this.update(deltaMs);
+      if (!this.paused && !this.conversationActive) this.update(deltaMs);
       this.raf = window.requestAnimationFrame((time) => this.loop(time));
     }
 
@@ -117,7 +119,7 @@
 
       if (!this.tutorial.active) {
         this.spawnElapsed += deltaMs;
-        if (this.spawnElapsed >= this.spawnInterval() && this.customers.filter(function (customer) { return !customer.removeAt; }).length < this.maxCustomers()) {
+        if (this.spawnElapsed >= this.spawnInterval() && this.customers.length < this.maxCustomers()) {
           this.spawnElapsed = 0; this.spawnCustomer(false);
         }
       }
@@ -127,20 +129,57 @@
       if (this.remainingTime <= 0 && !this.ending) this.endDay();
     }
 
-    maxCustomers() { return this.day >= 6 ? 4 : this.day >= 3 ? 3 : 2; }
+    maxCustomers() { return 1; }
     spawnInterval() { return Math.max(2600, (8600 - Math.min(11, this.day - 1) * 430) * this.modifiers.spawnTimeScale * this.currentEvent.spawnScale); }
     currentWallet() { return this.save.money + this.summary.revenue + this.summary.tips - this.summary.ingredientCosts - this.summary.penalties; }
     selectedCustomer() { return this.customers.find((customer) => customer.id === this.selectedCustomerId && !customer.removeAt) || null; }
 
     spawnCustomer(tutorialOrder) {
-      if (!this.active || this.customers.filter(function (customer) { return !customer.removeAt; }).length >= this.maxCustomers()) return;
+      if (!this.active || this.customers.length >= this.maxCustomers()) return;
+      const unlocked = CVVH.CharacterSystem.updateUnlocks(this.save, this.day, this.reputation);
+      if (unlocked.length && !tutorialOrder) {
+        CVVH.Storage.save(this.save);
+        this.showUnlockQueue(unlocked, () => this.spawnCustomer(false));
+        return;
+      }
       const customer = CVVH.Customers.create(this.day, this.availableFoods, this.modifiers, this.modifiers.trayCapacity, tutorialOrder, this.save, this.currentEvent);
       this.customers.push(customer);
-      if (tutorialOrder) this.selectedCustomerId = customer.id;
+      this.selectedCustomerId = customer.id;
       CVVH.Audio.play("arrival");
       this.renderAll(true);
-      const talk = CVVH.Story.crossTalk(this.customers.filter(function (item) { return !item.removeAt; }));
-      if (talk) CVVH.UI.toast(talk, "info");
+      this.startCustomerDialogue(customer, tutorialOrder);
+    }
+
+    showUnlockQueue(ids, done) {
+      const queue = ids.slice();
+      this.conversationActive = true;
+      const next = () => {
+        const id = queue.shift();
+        if (!id) {
+          this.conversationActive = false;
+          this.lastTime = performance.now();
+          if (typeof done === "function") done();
+          return;
+        }
+        CVVH.UI.showUnlock(CVVH.CharacterSystem.unlockDetails(id), next);
+      };
+      next();
+    }
+
+    startCustomerDialogue(customer, tutorialOrder) {
+      this.conversationActive = true;
+      this.renderAll(false);
+      const lines = CVVH.CharacterSystem.preOrderDialogue(this.save, customer.character, this.currentEvent);
+      CVVH.Storage.save(this.save);
+      CVVH.UI.playCustomerDialogue(lines, { phase:"Trước khi gọi món", finalLabel:"Xem đơn", allowSkip:true }, () => {
+        if (!this.active || customer.removeAt) return;
+        customer.orderRevealed = true;
+        this.conversationActive = false;
+        this.lastTime = performance.now();
+        this.renderAll(true);
+        CVVH.UI.toast("Đơn của " + customer.name + " đã được mở!", "info");
+        if (tutorialOrder && this.pendingTutorial) this.tutorial.start();
+      });
     }
 
     addIngredient(foodId, sourceElement) {
@@ -214,17 +253,18 @@
       const responseContext = CVVH.Story.dialogueContext(customer);
       const response = CVVH.Characters.pickDialogue(customer.character, responseContext, this.save);
       const wasBonus = customer.bonusSecond === true;
-      const triggerBonus = customer.characterId === "khanh" && !wasBonus && !this.tutorial.active && this.modifiers.trayCapacity >= 3 && Math.random() < .28;
+      const triggerBonus = customer.characterId === "khanh" && !wasBonus && !this.tutorial.active && this.modifiers.trayCapacity >= 3 && Math.random() < .22;
       if (triggerBonus) {
         customer.bonusSecond = true;
-        customer.order = CVVH.Orders.generate(this.day, this.availableFoods, Math.min(this.modifiers.trayCapacity, 5), Math.random, false);
-        while (customer.order.items.length < Math.min(3, this.modifiers.trayCapacity)) customer.order.items.push(this.availableFoods[Math.floor(Math.random() * this.availableFoods.length)].id);
+        customer.order = CVVH.CharacterSystem.generateOrder(this.save, customer.character, this.day, this.availableFoods, Math.min(this.modifiers.trayCapacity, 5), Math.random, false);
+        CVVH.CharacterSystem.recordOrder(this.save, customer.characterId, customer.order);
         customer.reward = customer.order.items.reduce((sum, id) => sum + CVVH.Config.foodById(id).price, 0);
         customer.remainingPatience = customer.maxPatience * 1.12;
         customer.status = "waiting";
+        customer.orderRevealed = false;
         customer.speech = "Chị... làm thêm phần nữa được không? Em đang hoàn thành những gì đã bắt đầu.";
       } else {
-        customer.status = "served"; customer.removeAt = performance.now() + 620;
+        customer.status = "served"; customer.removeAt = null;
       }
       const card = document.querySelector("[data-customer-id='" + customer.id + "']");
       CVVH.Audio.play("success"); if (card) { CVVH.UI.coinBurst(card); CVVH.UI.floating("+" + CVVH.Economy.money(result.revenue + result.tip), card, false); }
@@ -237,8 +277,10 @@
       }
       CVVH.UI.toast(message, "success");
       this.tray = []; this.selectedSauce = null; if (!triggerBonus) this.selectedCustomerId = null;
+      CVVH.CharacterSystem.recordService(this.save, customer.characterId, true, customer.patienceRatio() > .72);
       CVVH.Storage.save(this.save);
       this.renderAll(true); this.tutorial.notify("served");
+      this.showPostService(customer, true, triggerBonus);
     }
 
     serveWrong(customer) {
@@ -247,9 +289,37 @@
       customer.status = "angry";
       customer.speech = CVVH.Characters.pickDialogue(customer.character, "wrongOrder", this.save);
       this.tray = []; this.selectedSauce = null;
+      CVVH.CharacterSystem.recordService(this.save, customer.characterId, false, false);
       CVVH.Audio.play("error"); CVVH.UI.toast(customer.speech + " · Khách vẫn đang chờ đơn đúng.", "error");
       const serveButton = CVVH.UI.byId("serve-btn"); CVVH.UI.floating("−" + CVVH.Economy.money(CVVH.Config.BALANCE.wrongOrderPenalty), serveButton, true);
+      CVVH.Storage.save(this.save);
       this.renderAll(true);
+      this.showPostService(customer, false, false);
+    }
+
+    showPostService(customer, correct, bonusOrder) {
+      this.conversationActive = true;
+      this.renderAll(false);
+      const lines = bonusOrder ? CVVH.CharacterSystem.bonusOrderDialogue(customer.character) : CVVH.CharacterSystem.postServiceDialogue(this.save, customer.character, correct, customer.patienceRatio());
+      CVVH.UI.playCustomerDialogue(lines, { phase:correct ? "Phản hồi" : "Đơn chưa đúng", finalLabel:bonusOrder ? "Xem đơn mới" : (correct ? "Tạm biệt" : "Làm lại"), allowSkip:true }, () => {
+        if (!this.active) return;
+        if (bonusOrder) {
+          customer.status = "waiting";
+          customer.orderRevealed = true;
+          this.selectedCustomerId = customer.id;
+          CVVH.UI.toast("Khánh gọi thêm một đơn ngẫu nhiên!", "info");
+        } else if (correct) {
+          customer.removeAt = performance.now() + 360;
+          this.selectedCustomerId = null;
+        } else {
+          customer.status = customer.patienceRatio() < .22 ? "angry" : "waiting";
+          customer.orderRevealed = true;
+        }
+        this.conversationActive = false;
+        this.lastTime = performance.now();
+        CVVH.Storage.save(this.save);
+        this.renderAll(true);
+      });
     }
 
     onFoodReady(slot) {
@@ -290,7 +360,8 @@
       } else this.clearTray();
     }
 
-    canInteract() { return this.active && !this.paused && !this.ending; }
+    canInteract() { return this.active && !this.paused && !this.conversationActive && !this.ending; }
+    controlsEnabled() { return !this.paused && !this.conversationActive && !this.ending; }
 
     pause() {
       if (!this.active || this.ending || this.paused) return;
@@ -303,6 +374,7 @@
     autoPause() { if (this.active && !this.paused && !this.ending) this.pause(); }
     quitToMenu() {
       this.stopLoop(); this.paused = false; CVVH.UI.byId("pause-overlay").hidden = true;
+      CVVH.UI.byId("customer-dialogue").hidden = true; CVVH.UI.byId("unlock-modal").hidden = true;
       if (this.tutorial.active) this.tutorial.complete(true);
       if (typeof this.callbacks.menu === "function") this.callbacks.menu();
     }
@@ -316,22 +388,21 @@
     renderDynamic() {
       if (!this.active) return;
       CVVH.UI.updateHUD(this);
-      CVVH.UI.renderFryers(this.fryer, !this.paused);
-      CVVH.UI.renderCustomers(this.customers, this.selectedCustomerId, this.maxCustomers(), !this.paused);
-      CVVH.UI.updateServeState(this.selectedCustomer(), this.tray.length, this.selectedSauce, !this.paused);
-      if (this.tutorial.active) this.tutorial.refreshHighlight();
+      CVVH.UI.updateFryers(this.fryer, this.controlsEnabled());
+      CVVH.UI.updateCustomers(this.customers, this.selectedCustomerId, this.maxCustomers(), this.controlsEnabled());
+      CVVH.UI.updateServeState(this.selectedCustomer(), this.tray.length, this.selectedSauce, this.controlsEnabled());
     }
 
     renderAll(refreshTutorial) {
       if (!this.active) return;
-      CVVH.UI.renderIngredients(this.day, !this.paused);
+      CVVH.UI.renderIngredients(this.day, this.controlsEnabled());
       CVVH.UI.byId("world-event").textContent = this.currentEvent.label;
-      CVVH.UI.renderSauces(this.day, this.selectedSauce, !this.paused);
-      CVVH.UI.renderFryers(this.fryer, !this.paused);
+      CVVH.UI.renderSauces(this.day, this.selectedSauce, this.controlsEnabled());
+      CVVH.UI.renderFryers(this.fryer, this.controlsEnabled());
       CVVH.UI.renderTray(this.tray, this.modifiers.trayCapacity);
-      CVVH.UI.renderCustomers(this.customers, this.selectedCustomerId, this.maxCustomers(), !this.paused);
+      CVVH.UI.renderCustomers(this.customers, this.selectedCustomerId, this.maxCustomers(), this.controlsEnabled());
       CVVH.UI.updateHUD(this);
-      CVVH.UI.updateServeState(this.selectedCustomer(), this.tray.length, this.selectedSauce, !this.paused);
+      CVVH.UI.updateServeState(this.selectedCustomer(), this.tray.length, this.selectedSauce, this.controlsEnabled());
       if (refreshTutorial && this.tutorial.active) this.tutorial.refreshHighlight();
     }
 

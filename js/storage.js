@@ -28,6 +28,7 @@
   function createDefaultSave() {
     return {
       version: C.VERSION,
+      saveVersion: C.VERSION,
       money: C.BALANCE.startingMoney,
       currentDay: 1,
       reputation: C.BALANCE.startingReputation,
@@ -38,7 +39,11 @@
       bestScore: 0,
       hasPlayed: false,
       relationships: {},
-      story: { introSeen: false, seenScenes: [], chaptersCompleted: [], mysteryProgress: 0, dialogueSeen: {} },
+      unlockedCharacters: CVVH.CharacterSystem.INITIAL_UNLOCKS.slice(),
+      characterVisits: {},
+      recentOrders: {},
+      characterBook: {},
+      story: { introSeen: false, seenScenes: [], chaptersCompleted: [], mysteryProgress: 0, dialogueSeen: {}, flags: {}, activeThreads: {}, lastVisitors: [] },
       stats: blankStats()
     };
   }
@@ -64,6 +69,36 @@
         if (/^[a-z0-9-]+$/.test(id)) base.relationships[id] = Math.floor(finiteNumber(raw.relationships[id], 0, 0, 999));
       });
     }
+    const characterIds = new Set(CVVH.Characters.all.map(function (character) { return character.id; }));
+    if (Array.isArray(raw.unlockedCharacters)) {
+      base.unlockedCharacters = raw.unlockedCharacters.filter(function (id) { return characterIds.has(id); });
+    } else if (Number(raw.version || raw.saveVersion || 1) < 2) {
+      base.unlockedCharacters = CVVH.CharacterSystem.seedForProgress(base.currentDay, base.reputation);
+    }
+    if (raw.characterVisits && typeof raw.characterVisits === "object") {
+      Object.keys(raw.characterVisits).forEach(function (id) {
+        if (characterIds.has(id)) base.characterVisits[id] = Math.floor(finiteNumber(raw.characterVisits[id], 0, 0, 99999));
+      });
+    }
+    if (raw.recentOrders && typeof raw.recentOrders === "object") {
+      Object.keys(raw.recentOrders).forEach(function (id) {
+        if (characterIds.has(id) && Array.isArray(raw.recentOrders[id])) base.recentOrders[id] = raw.recentOrders[id].filter(function (value) { return typeof value === "string"; }).slice(-5);
+      });
+    }
+    if (raw.characterBook && typeof raw.characterBook === "object") {
+      Object.keys(raw.characterBook).forEach(function (id) {
+        if (!characterIds.has(id) || !raw.characterBook[id] || typeof raw.characterBook[id] !== "object") return;
+        const item = raw.characterBook[id];
+        base.characterBook[id] = {
+          unlockedAtDay:Math.floor(finiteNumber(item.unlockedAtDay, 1, 1, 999)),
+          visits:Math.floor(finiteNumber(item.visits, base.characterVisits[id] || 0, 0, 99999)),
+          correctOrders:Math.floor(finiteNumber(item.correctOrders, 0, 0, 99999)),
+          wrongOrders:Math.floor(finiteNumber(item.wrongOrders, 0, 0, 99999)),
+          fastOrders:Math.floor(finiteNumber(item.fastOrders, 0, 0, 99999)),
+          updated:item.updated === true
+        };
+      });
+    }
     if (raw.story && typeof raw.story === "object") {
       base.story.introSeen = raw.story.introSeen === true;
       ["seenScenes", "chaptersCompleted"].forEach(function (key) {
@@ -71,6 +106,19 @@
       });
       base.story.mysteryProgress = Math.floor(finiteNumber(raw.story.mysteryProgress, 0, 0, 99));
       if (raw.story.dialogueSeen && typeof raw.story.dialogueSeen === "object") base.story.dialogueSeen = raw.story.dialogueSeen;
+      if (raw.story.flags && typeof raw.story.flags === "object") {
+        Object.keys(raw.story.flags).slice(0, 300).forEach(function (key) {
+          const value = raw.story.flags[key];
+          if (typeof value === "boolean" || typeof value === "string" || Number.isFinite(Number(value))) base.story.flags[key] = value;
+        });
+      }
+      if (raw.story.activeThreads && typeof raw.story.activeThreads === "object") {
+        Object.keys(raw.story.activeThreads).slice(0, 100).forEach(function (key) {
+          const value = raw.story.activeThreads[key];
+          if (typeof value === "boolean" || typeof value === "string" || Number.isFinite(Number(value))) base.story.activeThreads[key] = value;
+        });
+      }
+      if (Array.isArray(raw.story.lastVisitors)) base.story.lastVisitors = raw.story.lastVisitors.filter(function (id) { return characterIds.has(id); }).slice(-5);
     }
 
     if (raw.upgrades && typeof raw.upgrades === "object") {
@@ -92,7 +140,9 @@
         base.stats[key] = Math.floor(finiteNumber(raw.stats[key], base.stats[key], key === "totalProfit" ? -999999999 : 0, 999999999999));
       });
     }
+    CVVH.CharacterSystem.ensure(base);
     base.version = C.VERSION;
+    base.saveVersion = C.VERSION;
     return base;
   }
 

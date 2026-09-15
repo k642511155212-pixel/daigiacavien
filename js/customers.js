@@ -15,6 +15,7 @@
       this.relationshipPoints = relationshipPoints || 0;
       this.relationshipStage = CVVH.Characters.stage(this.relationshipPoints);
       this.order = order;
+      this.orderRevealed = false;
       this.maxPatience = Math.max(14, 30 * variant.patienceMultiplier * patienceScale - Math.min(day - 1, 10) * .55);
       this.remainingPatience = this.maxPatience;
       this.status = "waiting";
@@ -36,28 +37,17 @@
   }
 
   function create(day, availableFoods, modifiers, maxItems, tutorialOrder, save, event) {
-    let pool = CVVH.Characters.eligible(day, event.id);
-    if (tutorialOrder) pool = pool.filter(function (character) { return character.id === "khanh"; });
-    const variant = pool[Math.floor(Math.random() * pool.length)] || CVVH.Characters.all[0];
-    let order = CVVH.Orders.generate(day, availableFoods, maxItems, Math.random, tutorialOrder);
-    if (!tutorialOrder) {
-      let desired = order.items.length;
-      if (variant.portionSizeWeight === "high") desired = Math.max(desired, 3 + Math.floor(Math.random() * 3));
-      if (variant.portionSizeWeight === "large") desired = Math.max(desired, 3 + Math.floor(Math.random() * 2));
-      if (variant.portionSizeWeight === "group" && day >= 4 && Math.random() < .36 + event.groupChance) desired = Math.max(desired, 4 + Math.floor(Math.random() * 7));
-      desired = Math.min(maxItems, desired);
-      while (order.items.length < desired) order.items.push(availableFoods[Math.floor(Math.random() * availableFoods.length)].id);
-      if (variant.preferredSauce && Math.random() < .42) order.sauce = variant.preferredSauce;
-    }
+    const variant = tutorialOrder ? CVVH.Characters.getById("khanh") : CVVH.CharacterSystem.chooseCharacter(save, day, event, Math.random);
+    const order = CVVH.CharacterSystem.generateOrder(save, variant, day, availableFoods, maxItems, Math.random, tutorialOrder);
     const relation = Number(save.relationships[variant.id]) || 0;
-    if (variant.id === "anh-bon-ba-bay" && save.story.mysteryProgress === 0) {
-      order = { items:["dau-hu","xuc-xich","pho-mai"].slice(0, maxItems), sauce:"sot-mix", secretBonus:.12 };
-    } else if (relation >= 22 && Math.random() < .14 && order.items.length < maxItems) {
+    if (relation >= 22 && Math.random() < .14 && order.items.length < maxItems) {
       order.items.push(availableFoods[Math.floor(Math.random() * availableFoods.length)].id);
       order.secretBonus = .12;
     }
     const context = relation === 0 ? "firstVisit" : relation >= 10 && Math.random() < .24 ? "highRelationship" : event.id === "rain" ? "rain" : event.id === "exams" ? "exams" : event.id === "graduation" ? "graduation" : "normal";
     const speech = CVVH.Characters.pickDialogue(variant, context, save);
+    CVVH.CharacterSystem.recordOrder(save, variant.id, order);
+    CVVH.CharacterSystem.recordVisit(save, variant.id);
     return new Customer(variant, order, day, (1 + modifiers.patienceBonus) * event.patienceScale, speech, relation);
   }
 
