@@ -1,0 +1,39 @@
+@media (min-width: 1600px) {
+  .customers { min-height:290px; }.customer-zone{min-height:37vh}.ingredient-button{min-height:90px}.fryer-slots{min-height:122px}
+}
+
+@media (max-width: 1100px) {
+  .hud { grid-template-columns:100px repeat(4,1fr) 76px auto; }.hud-brand img{width:92px}.hud-stat strong{font-size:.9rem}
+  .counter-zone { grid-template-columns:minmax(210px,.8fr) minmax(330px,1.3fr); }
+  .service-row { grid-template-columns:minmax(235px,.9fr) minmax(300px,1.3fr) 76px; }
+  .fryer-slots { grid-template-columns:repeat(3,1fr); }.fryer-slot{min-height:82px}.ingredients{grid-template-columns:repeat(4,1fr)}
+  .customer-zone{min-height:320px}.customers{min-height:250px}.customer-card{width:210px}.upgrade-grid{grid-template-columns:repeat(2,1fr)}
+}
+
+@media (max-width: 820px) {
+  .menu-scene { grid-template-columns:minmax(280px,560px); grid-template-rows:auto; padding-top:22px; }
+  .menu-sign,.menu-card,.menu-progress{grid-column:1}.menu-progress{grid-template-columns:1fr 1fr}
+  .game-screen { padding:6px; }.hud { position:sticky;top:3px;grid-template-columns:62px repeat(3,1fr) 64px auto;min-height:65px;padding:6px; }
+  .hud-brand img{width:58px}.hud-stat:nth-of-type(4){display:none}.hud-stat span,.combo-box span{font-size:.55rem}.hud-stat strong{font-size:.76rem}.hud-actions{gap:3px}.icon-button{width:38px;height:38px;border-radius:11px}
+  .stall-scene{min-height:calc(100vh - 83px);border-radius:18px}.customer-zone{min-height:300px;padding:8px}.customers{min-height:235px;gap:3px;overflow-x:auto;justify-content:flex-start;padding:0 6px}.customer-card{flex:0 0 184px;width:184px}.order-bubble{min-height:84px}.customer-avatar-wrap{width:120px;height:120px}
+  .counter-zone{grid-template-columns:1fr;grid-template-areas:"fryer" "ingredients" "service";}.ingredients{grid-template-columns:repeat(4,1fr)}
+  .service-row{grid-template-columns:1fr 1.25fr 68px}.sauces{grid-template-columns:repeat(3,1fr)}.sauce-button{min-height:73px}.sauce-button:nth-child(n+4){grid-column:auto}.trash-bin{min-height:150px}.tray-item{width:48px;height:48px;flex-basis:48px}.tray-item img{width:41px;height:41px}
+  .stats-grid{grid-template-columns:repeat(2,1fr)}.achievement-strip{grid-template-columns:auto 1fr}.achievement-progress{grid-column:1/-1}.end-summary{grid-template-columns:1fr}
+}
+
+@media (max-width: 560px) {
+  .menu-scene{align-content:start;padding:18px 12px 28px}.menu-sign img{width:88vw}.menu-sign p{font-size:.86rem}.menu-card{padding:15px}.menu-grid{grid-template-columns:1fr 1fr}.menu-grid .game-button{font-size:.68rem;padding:8px}.menu-progress{padding:12px;gap:7px}.menu-progress div{padding:10px;display:grid;gap:3px}.menu-progress strong{font-size:.9rem}
+  .hud{grid-template-columns:48px repeat(2,1fr) 57px auto}.hud-brand img{width:44px}.hud-stat:nth-of-type(3){display:none}.hud-stat{min-height:48px}.combo-box{min-height:46px}.combo-box strong{font-size:1.08rem}.icon-button{width:34px;height:34px;padding:0;font-size:.9rem;border-width:2px;box-shadow:0 2px 0 var(--brown)}
+  .customer-zone{min-height:272px}.customers{min-height:217px}.customer-card{flex-basis:170px;min-height:210px}.customer-avatar-wrap{width:108px;height:108px;margin-bottom:23px}.order-food{width:36px;height:36px}.order-sauce small{display:none}.order-sauce{max-width:38px}
+  .counter-zone{padding:7px;gap:7px}.counter-zone .game-panel{border-width:2px}.panel-title span{display:none}.ingredient-panel,.fryer-panel,.sauce-panel,.tray-panel{padding:7px}.ingredients{grid-template-columns:repeat(4,1fr);gap:4px}.ingredient-button{min-height:69px;border-width:2px}.ingredient-button img{width:38px;height:37px}.ingredient-button small{display:none}
+  .fryer-slots{grid-template-columns:repeat(3,1fr);gap:4px;padding:4px}.fryer-slot{min-height:76px}.fryer-food img{width:46px;height:46px}.service-row{grid-template-columns:1fr;}.sauces{grid-template-columns:repeat(5,1fr)}.sauce-button{min-height:66px}.sauce-button img{height:40px;width:28px}.sauce-button span{font-size:.45rem}.trash-bin{min-height:62px;display:flex}.trash-bin img{width:38px;height:44px}
+  .serving-tray{min-height:66px;justify-content:flex-start;overflow-x:auto}.serve-controls{align-items:stretch}.selected-customer-label{font-size:.7rem}.serve-controls .game-button{min-width:108px;font-size:.75rem}
+  .tutorial-card{bottom:8px;padding:12px}.coach-avatar{display:none}.tutorial-card p{font-size:.76rem}.tutorial-actions{justify-content:space-between}.tutorial-actions .text-button{font-size:.7rem}
+  .secondary-screen{padding:18px 12px 34px}.secondary-header{gap:11px}.secondary-header .wallet-chip{font-size:.73rem;padding:8px 10px}.upgrade-grid{grid-template-columns:1fr}.upgrade-card{min-height:230px}.stats-grid{grid-template-columns:1fr 1fr;gap:8px}.stat-card{min-height:118px;padding:12px}.stat-card strong{font-size:1.15rem}.end-card{padding:18px}.end-actions .game-button{width:100%}.modal-card{padding:22px 16px}.how-steps{grid-template-columns:1fr}.legend-row{font-size:.7rem}
+}
+
+@media (max-width: 380px) {
+  .hud-stat span{font-size:.48rem}.hud-stat strong{font-size:.68rem}.menu-grid{grid-template-columns:1fr}.customer-card{flex-basis:160px}.ingredients{grid-template-columns:repeat(3,1fr)}.sauces{grid-template-columns:repeat(5,minmax(47px,1fr))}.stats-grid{grid-template-columns:1fr}
+}
+
+@media (hover:none) { .game-button:hover:not(:disabled),.ingredient-button:hover:not(:disabled){transform:none} }
