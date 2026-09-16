@@ -7,8 +7,8 @@ Game quản lý thời gian thuần HTML/CSS/JavaScript về một quầy đồ 
 ## Gameplay
 
 1. Mỗi lượt chỉ có một khách xuất hiện; đọc 1–2 câu trò chuyện ngắn trước khi đơn được mở.
-2. Bấm món để đưa vào chảo chiên, bàn trộn hoặc nồi phù hợp.
-3. Theo dõi các trạng thái chế biến; lấy món khi **Sẵn sàng**, nếu để quá lâu món có thể hỏng/cháy.
+2. Bấm nguyên liệu để đưa vào một ô chảo trống.
+3. Theo dõi các trạng thái **Sống → Đang chiên → Sẵn sàng → Cháy**.
 4. Bấm món ở trạng thái **Sẵn sàng** để chuyển sang khay.
 5. Chọn đúng sốt, chọn ly trà hoặc **Không nước**, rồi bấm **Phục vụ**; khách sẽ phản hồi trước khi rời quầy.
 6. Dùng lợi nhuận nâng cấp quầy và mở thêm nhân vật trong **Sổ khách quen**.
@@ -17,24 +17,24 @@ Game quản lý thời gian thuần HTML/CSS/JavaScript về một quầy đồ 
 
 ## Tính năng nổi bật
 
-- 8 món được kiểm soát theo 6 chặng: món chiên nền tảng, trà, nem chua rán, bánh tráng trộn, mì trộn và cá viên cà ri đặc trưng.
-- Chảo, bàn trộn và nồi hoạt động độc lập, có khoảng thời gian lấy món trước khi hỏng.
+- 16 món đồ chiên mở dần theo ngày, 5 loại sốt, 4 loại trà và đơn có món lặp lại.
+- Từng ô chảo hoạt động độc lập, có khoảng thời gian lấy món trước khi cháy.
 - Khay phục vụ giới hạn dung lượng; cấp cao mở các đơn nhóm lớn.
-- 27 khách có tên trong một registry duy nhất, 4 mẫu khách thường và Homi — corgi linh vật không bao giờ gọi món.
+- 27 khách quen hư cấu thuộc nhiều nhóm: học sinh, giáo viên, phụ huynh, bảo vệ, cán bộ an toàn thực phẩm, tài xế và chủ quầy đối thủ.
 - Hội thoại ngắn trước khi lộ đơn, phản ứng sau đơn đúng/sai và tuyến truyện liên tục giữa các lượt ghé.
-- Canon sạch cho Phước Nguyên–Anh Quân, Thiên Ân–Homi, Hoàng Linh, An tóc xoăn chơi bóng rổ, Nhân nữ du học sinh Hong Kong, Dương–Thủy học IT và Vũ–Hân.
+- Canon riêng cho bộ ba Quý–Trang–Trân; Nhân là nữ du học sinh từ Hong Kong; Thủy là nam sinh IT cùng lớp Dương và siêu thích chị Thảo; Dương học IT; Vũ–Hân; Khánh; Học; Thơ; cùng các nhân vật mới Phước Nguyên, Anh Quân, Thiên Ân, Hoàng Linh và An nam sinh bóng rổ tóc xoăn.
 - Sổ khách quen hiển thị chân dung, mô tả động, lượt ghé, trait và 5 cấp quan hệ.
 - Mở khóa nhân vật bằng ngày, uy tín, số lượt phục vụ và cờ truyện; popup mở khóa có hoạt ảnh riêng.
 - Đơn của mọi nhân vật đều ngẫu nhiên và ghi nhớ 5 đơn gần nhất để hạn chế lặp.
 - 6 chương truyện ngắn tại Biên Hòa và chế độ vô tận từ ngày 18.
 - Sự kiện: giờ ra chơi, tan trường, mưa chiều, tuần thi, hội thao, ngày CLB, Valentine, tốt nghiệp và Food Street Rush.
 - Quan hệ 5 cấp: Khách mới, Khách quen, Thân thuộc, Bạn của quầy, Khách ruột.
-- Khánh có cơ chế bảo đảm xuất hiện trong tối đa hai ngày, cảnh báo riêng, đơn lớn ngẫu nhiên, boa hào phóng và cơ hội gọi đơn thứ hai.
-- Chỉ tiêu ngày 1–5 lần lượt là 8, 10, 12, 14, 16; ngày thường sau đó có 16–18 khách và sự kiện lớn tối đa 18–20.
+- Khánh xuất hiện thường xuyên hơn, gọi phần lớn, boa hào phóng, có đơn thứ hai và cảnh báo “KHÁNH BÉO ĐANG ĐỔ BỘ!!!”.
+- Mỗi ngày có chỉ tiêu lượt khách tăng dần từ 4 tới tối đa 14, luôn giữ vòng chơi một khách tại một thời điểm.
 - 8 nhánh nâng cấp có giá tăng theo cấp và hiệu ứng áp dụng trực tiếp vào gameplay.
 - Hướng dẫn tương tác lần đầu, tạm dừng, thống kê dài hạn, âm thanh Web Audio và lưu tự động.
-- Giao diện quầy bếp pixel-art với HUD phía trên, khách đang gọi món và các trạm tích hợp; desktop vừa trong một viewport, tablet/điện thoại tự sắp lại.
-- Toàn bộ chân dung, món và ly dùng chung hệ pixel; font DejaVu Sans được lưu cục bộ và khai báo bằng `@font-face` để hiển thị đủ dấu tiếng Việt.
+- Giao diện quầy bếp pixel-art góc nhìn từ trên xuống, co giãn cho desktop, tablet và điện thoại; có hỗ trợ bàn phím và focus rõ ràng.
+- Typography dùng bộ fallback hỗ trợ đầy đủ dấu tiếng Việt, không tải font hoặc tài nguyên ngoài.
 
 ## Điều khiển
 
@@ -60,9 +60,7 @@ Mọi đường dẫn trong game đều là đường dẫn tương đối nên 
 
 ## Lưu tiến trình
 
-Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và schema phiên bản 4. Dữ liệu gồm tiền, ngày, uy tín, nâng cấp, món/nhân vật đã mở, lượt ghé, 5 đơn gần nhất, Sổ khách quen, cờ truyện, tiến độ thực đơn và trạng thái bảo đảm Khánh. Save cũ được chuyển đổi an toàn; quan hệ hợp lệ của An được giữ cho canon mới, còn ID đã nghỉ được loại bỏ. Trạng thái đang chế biến dở không được lưu.
-
-Build hiện tại hiển thị ngay trong menu: `2026.09-CLEAN-CHARACTER-UPDATE`. Cùng giá trị này được xuất qua `window.GAME_VERSION` để kiểm tra GitHub Pages đã tải đúng bản.
+Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và schema phiên bản 4. Dữ liệu gồm tiền, ngày, uy tín, nâng cấp, món/nhân vật đã mở, lượt ghé, 5 đơn gần nhất, Sổ khách quen, cờ truyện, quan hệ, chương và cảnh đã xem. Save phiên bản cũ được chuyển đổi an toàn; dữ liệu sai định dạng được phục hồi về cấu hình mặc định. Trạng thái đang chiên dở không được lưu.
 
 ## Cấu trúc
 
@@ -96,12 +94,10 @@ Build hiện tại hiển thị ngay trong menu: `2026.09-CLEAN-CHARACTER-UPDATE
     ├── food/
     ├── drinks/
     ├── characters/
-    ├── fonts/
     ├── restaurant/
     ├── ui/
     └── audio/
 └── qa/
-    ├── generate-pixel-assets.mjs
     └── validate.mjs
 ```
 
@@ -118,3 +114,10 @@ Có thể chạy `node qa/validate.mjs` nếu máy đã có Node.js để kiểm
 ## Giấy phép nội dung
 
 Mã nguồn và asset trong repository này được tạo cho dự án **Cá Viên Vỉa Hè**. Không có asset nào được sao chép hoặc hotlink từ ảnh tham chiếu.
+
+
+## Build hiện tại
+
+`2026.09.16-CLEAN-STORY-v4`
+
+Bản này dọn sạch Trâm, My, Gia Huy và các giáo viên đã bỏ; sửa order để không bao giờ gọi món chưa mở khóa; thêm Homi; đồng bộ portrait pixel; sửa font tiếng Việt bằng system font stack an toàn; và sửa animation Khánh chạy hết màn hình trước khi lặp lại.

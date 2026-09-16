@@ -82,10 +82,6 @@
   .fryer-food img { width:42px; height:42px; }
   .fryer-status { bottom:2px; font-size:.52rem; }
   .fryer-progress { bottom:13px; height:4px; }
-  .prep-stations { gap:3px; margin-top:4px; }
-  .prep-station { min-height:44px; grid-template-columns:31px 1fr; padding:2px; }
-  .prep-food { width:29px; height:29px; }.prep-food img{width:28px;height:28px}
-  .prep-label{font-size:.46rem}.prep-status{font-size:.4rem}.prep-progress{left:35px}
   .service-row { grid-template-columns:minmax(116px,.75fr) minmax(190px,1.45fr) 58px; gap:6px; }
   .sauces { grid-template-columns:repeat(3,1fr); gap:3px; }
   .sauce-button { min-height:52px; padding:2px 1px; border-radius:9px; }
@@ -147,8 +143,6 @@
   .fryer-food img { width:31px; height:31px; }
   .fryer-status { font-size:.43rem; }
   .fryer-progress { bottom:11px; }
-  .prep-stations{margin-top:2px}.prep-station{min-height:31px;grid-template-columns:23px 1fr}
-  .prep-food,.prep-food img{width:22px;height:22px}.prep-label{font-size:.38rem}.prep-status{display:none}.prep-progress{left:27px;height:3px}
   .sauce-button { min-height:39px; border-width:1px; box-shadow:0 2px 0 var(--brown); }
   .sauce-button img { width:19px; height:23px; }
   .sauce-button span { font-size:.4rem; }
@@ -177,286 +171,61 @@
 
 @media (hover:none) { .game-button:hover:not(:disabled),.ingredient-button:hover:not(:disabled){transform:none} }
 
-/* Dense restaurant layout inspired by the reference: customers occupy the upper
-   third, while the playable counter stays large, readable and fully clickable. */
+/* Pixel kitchen responsive pass. Desktop stays inside one laptop viewport. */
 @media (min-width:900px) {
-  .game-screen.active {
-    grid-template-rows:56px minmax(0,1fr);
-    gap:5px;
-    padding:6px;
-  }
-  .hud {
-    min-height:51px;
-    height:51px;
-    margin-bottom:0;
-    padding:4px 9px;
-  }
-  .hud-brand img { width:92px; }
-  .hud-stat { min-height:40px; }
-  .combo-box { min-height:42px; }
-  .icon-button { width:39px; height:39px; }
-
-  .stall-scene {
-    grid-template-rows:minmax(176px,34%) minmax(0,66%);
-  }
-  .customer-zone {
-    min-height:0;
-    padding:35px 14px 6px;
-  }
-  .zone-heading {
-    position:absolute;
-    z-index:5;
-    top:39px;
-    left:14px;
-    margin:0;
-    padding:3px 9px;
-  }
-  .customers {
-    height:100%;
-    min-height:0;
-    align-items:end;
-    padding-top:5px;
-  }
-  .customers::before,.customers::after {
-    top:auto;
-    bottom:12px;
-    width:62px;
-    height:62px;
-  }
-  .customer-card {
-    width:clamp(214px,20vw,278px);
-    min-height:100%;
-    justify-content:end;
-  }
-  .order-bubble {
-    width:min(360px,118%);
-    min-height:70px;
-    padding:6px 9px 8px;
-  }
-  .order-head { font-size:.65rem; }
-  .order-items { gap:4px; margin-top:3px; }
-  .order-food { width:38px; height:38px; flex-basis:38px; }
-  .order-sauce img,.order-drink img { width:24px; height:30px; }
-  .order-sauce small,.order-drink small { display:none; }
-  .customer-avatar-wrap {
-    width:clamp(88px,9.6vh,116px);
-    height:clamp(88px,9.6vh,116px);
-    margin-bottom:20px;
-  }
-
-  .counter-zone {
-    min-height:0;
-    height:100%;
-    grid-template-columns:minmax(210px,.9fr) minmax(230px,1.06fr) minmax(330px,1.48fr);
-    grid-template-areas:"ingredients fryer service";
-    align-items:stretch;
-    gap:8px;
-    padding:20px 9px 11px;
-  }
-  .counter-zone > *,
-  .counter-zone .game-panel,
-  .service-row > * { min-width:0; min-height:0; }
-  .ingredient-panel,.fryer-panel,.drink-panel,.sauce-panel,.tray-panel {
-    height:100%;
-    overflow:hidden;
-    padding:7px;
-  }
-  .panel-title {
-    min-height:24px;
-    margin-bottom:5px;
-  }
-  .panel-title h2 { font-size:.72rem; }
-  .panel-title span { font-size:.53rem; }
-
-  .ingredients {
-    height:calc(100% - 29px);
-    grid-template-columns:repeat(4,minmax(0,1fr));
-    grid-auto-rows:minmax(0,1fr);
-    align-content:stretch;
-    gap:5px;
-  }
-  .ingredient-button {
-    min-height:0;
-    height:100%;
-    gap:3px;
-    padding:3px;
-  }
-  .ingredient-button img {
-    width:clamp(38px,4.3vw,62px);
-    height:clamp(36px,4.1vw,58px);
-  }
-  .ingredient-button strong { font-size:clamp(.55rem,.62vw,.72rem); }
-  .ingredient-button small { display:none; }
-
-  .fryer-slots {
-    height:calc(100% - 92px);
-    min-height:0;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    grid-auto-rows:minmax(0,1fr);
-    gap:5px;
-    padding:5px;
-  }
-  .fryer-slot { min-height:0; height:100%; }
-  .fryer-slot::before { inset:6px; }
-  .fryer-food { inset:5px 5px 22px; }
-  .fryer-food img {
-    width:clamp(42px,4.4vw,66px);
-    height:clamp(42px,4.4vw,66px);
-  }
-  .fryer-status { bottom:3px; font-size:.55rem; }
-  .fryer-progress { bottom:16px; height:5px; }
-  .prep-stations {
-    height:58px;
-    grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:4px;
-    margin-top:5px;
-  }
-  .prep-station { min-height:0; height:100%; grid-template-columns:36px 1fr; padding:3px; }
-  .prep-food,.prep-food img { width:34px; height:34px; }
-  .prep-label { font-size:.48rem; }
-  .prep-status { font-size:.43rem; }
-  .prep-progress { left:40px; }
-
-  .service-row {
-    height:100%;
-    grid-template-columns:minmax(110px,.76fr) minmax(110px,.76fr) 58px;
-    grid-template-rows:minmax(0,.94fr) minmax(0,1.06fr);
-    grid-template-areas:"drink sauce trash" "tray tray trash";
-    gap:6px;
-  }
-  .drinks,.sauces {
-    height:calc(100% - 29px);
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    grid-auto-rows:minmax(0,1fr);
-    align-content:stretch;
-    gap:4px;
-  }
-  .drink-button,.sauce-button {
-    min-height:0;
-    height:100%;
-    padding:2px 1px;
-  }
-  .drink-button img { width:30px; height:36px; }
-  .sauce-button img { width:29px; height:39px; }
-  .drink-button span,.sauce-button span { font-size:.48rem; }
-  .tray-panel { display:grid; grid-template-rows:auto minmax(0,1fr) auto; }
-  .serving-tray {
-    min-height:0;
-    height:100%;
-    padding:5px 8px;
-    overflow-x:auto;
-  }
-  .tray-item { width:46px; height:46px; flex-basis:46px; }
-  .tray-item img { width:39px; height:39px; }
-  .serve-controls { margin-top:6px; gap:6px; }
-  .selected-customer-label { min-height:36px; padding:4px 7px; font-size:.6rem; }
-  .serve-controls .game-button {
-    min-width:116px;
-    min-height:36px;
-    padding:5px 9px;
-    font-size:.7rem;
-  }
-  .trash-bin { min-height:0; height:100%; }
-  .trash-bin img { width:40px; height:46px; }
+  .game-screen.active{grid-template-rows:58px minmax(0,1fr)}
+  .hud{min-height:52px;margin-bottom:5px}
+  .stall-scene{grid-template-rows:minmax(150px,1fr) auto}
+  .customer-zone{padding-top:34px}
+  .customer-card{min-height:142px;width:220px}
+  .customer-avatar-wrap{width:86px;height:86px;margin-bottom:18px}
+  .order-bubble{width:310px;min-height:62px;padding:5px 8px 7px}
+  .order-food{width:32px;height:32px}.order-sauce img,.order-drink img{width:21px;height:27px}
+  .order-head{font-size:.62rem}.order-sauce small,.order-drink small{display:none}
+  .counter-zone{grid-template-columns:minmax(250px,.95fr) minmax(190px,.72fr) minmax(350px,1.4fr);padding-top:17px}
+  .ingredients{grid-template-columns:repeat(4,1fr);gap:4px}
+  .ingredient-button{min-height:46px}.ingredient-button img{width:30px;height:27px}.ingredient-button strong{font-size:.51rem}
+  .service-row{grid-template-columns:1fr 1fr 52px;grid-template-areas:"drink sauce trash" "tray tray trash";gap:5px}
+  .drinks,.sauces{grid-template-columns:repeat(2,1fr);gap:3px}
+  .drink-button,.sauce-button{min-height:43px}.drink-button img{width:23px;height:25px}.drink-button span{font-size:.43rem}
+  .panel-title{min-height:20px}.panel-title h2{font-size:.67rem}
+  .serving-tray{min-height:45px}.trash-bin{min-height:100%}
 }
 
-@media (min-width:1400px) and (min-height:760px) {
-  .stall-scene { grid-template-rows:minmax(215px,36%) minmax(0,64%); }
-  .customer-avatar-wrap { width:118px; height:118px; }
-  .order-bubble { min-height:78px; }
-  .order-food { width:42px; height:42px; flex-basis:42px; }
-  .counter-zone { grid-template-columns:minmax(320px,.95fr) minmax(360px,1.08fr) minmax(500px,1.5fr); }
+@media (min-width:1200px){
+  .counter-zone{grid-template-columns:minmax(300px,.95fr) minmax(230px,.72fr) minmax(430px,1.4fr)}
+  .service-row{grid-template-columns:minmax(100px,.72fr) minmax(100px,.72fr) minmax(185px,1.45fr) 52px;grid-template-areas:"drink sauce tray trash"}
 }
 
-/* Short laptop screens remain one-screen games without turning the counter tiny. */
-@media (min-width:900px) and (max-height:650px) {
-  .game-screen.active { grid-template-rows:47px minmax(0,1fr); padding:4px; gap:3px; }
-  .hud { height:44px; min-height:44px; padding:2px 7px; }
-  .hud-brand img { width:76px; }
-  .hud-stat,.combo-box { min-height:36px; }
-  .icon-button { width:34px; height:34px; }
-  .stall-scene { grid-template-rows:minmax(132px,35%) minmax(0,65%); }
-  .pixel-awning { height:25px; }
-  .customer-zone { padding:26px 10px 3px; }
-  .zone-heading { top:28px; left:9px; padding:2px 7px; }
-  .zone-heading h2 { font-size:.62rem; }
-  .zone-heading span { font-size:.52rem; }
-  .customer-card { width:clamp(174px,18vw,224px); min-height:100%; }
-  .customer-avatar-wrap { width:68px; height:68px; margin-bottom:15px; }
-  .order-bubble { width:min(280px,116%); min-height:51px; padding:3px 6px 5px; }
-  .order-head { font-size:.53rem; }
-  .order-items { margin-top:1px; }
-  .order-food { width:27px; height:27px; flex-basis:27px; }
-  .order-sauce img,.order-drink img { width:18px; height:22px; }
-  .counter-zone { gap:5px; padding:14px 6px 7px; }
-  .counter-label { top:-11px; padding:2px 6px; font-size:.45rem; }
-  .ingredient-panel,.fryer-panel,.drink-panel,.sauce-panel,.tray-panel { padding:4px; }
-  .panel-title { min-height:18px; margin-bottom:3px; }
-  .panel-title h2 { font-size:.59rem; }
-  .panel-title > span { display:none; }
-  .ingredients { height:calc(100% - 21px); gap:3px; }
-  .ingredient-button { border-width:1px; }
-  .ingredient-button img { width:29px; height:27px; }
-  .ingredient-button strong { font-size:.46rem; }
-  .fryer-slots { height:calc(100% - 63px); gap:3px; padding:3px; }
-  .fryer-food img { width:34px; height:34px; }
-  .prep-stations { height:40px; margin-top:3px; }
-  .prep-station { grid-template-columns:25px 1fr; border-width:1px; }
-  .prep-food,.prep-food img { width:23px; height:23px; }
-  .prep-status { display:none; }
-  .prep-progress { left:29px; }
-  .service-row { grid-template-columns:minmax(88px,.72fr) minmax(88px,.72fr) 47px; gap:4px; }
-  .drinks,.sauces { height:calc(100% - 21px); gap:2px; }
-  .drink-button,.sauce-button { border-width:1px; }
-  .drink-button img { width:22px; height:25px; }
-  .sauce-button img { width:21px; height:27px; }
-  .drink-button span,.sauce-button span { font-size:.4rem; }
-  .tray-item { width:34px; height:34px; flex-basis:34px; }
-  .tray-item img { width:29px; height:29px; }
-  .serving-tray:empty::after { font-size:.54rem; }
-  .serve-controls { margin-top:3px; }
-  .selected-customer-label { min-height:27px; font-size:.49rem; }
-  .serve-controls .game-button { min-width:88px; min-height:28px; padding:3px 5px; font-size:.55rem; }
-  .trash-bin img { width:29px; height:33px; }
-  .trash-bin span { font-size:.45rem; }
+@media (min-width:900px) and (max-height:650px){
+  .game-screen.active{grid-template-rows:48px minmax(0,1fr);padding:4px}
+  .hud{min-height:43px}.stall-scene{grid-template-rows:minmax(118px,1fr) auto}
+  .pixel-awning{height:25px}.customer-zone{padding-top:25px}
+  .customer-card{min-height:106px}.customer-avatar-wrap{width:62px;height:62px;margin-bottom:14px}
+  .order-bubble{min-height:50px;padding:3px 6px 5px}.order-food{width:25px;height:25px}.order-sauce img,.order-drink img{width:18px;height:21px}
+  .counter-zone{padding-top:14px}.counter-label{top:-11px;font-size:.45rem;padding:2px 6px}
+  .ingredient-button{min-height:38px}.ingredient-button img{width:24px;height:21px}.ingredient-button strong{font-size:.44rem}
+  .fryer-slot{min-height:42px}.drink-button,.sauce-button{min-height:36px}.drink-button img{height:20px}.serving-tray{min-height:36px}
 }
 
-@media (max-width:899px) {
-  body.game-active { overflow:auto; }
-  .game-screen.active { min-height:100dvh; height:auto; overflow:visible; }
-  .stall-scene { height:auto; }
-  .counter-label { display:none; }
-  .service-row {
-    grid-template-columns:1fr 1fr 58px;
-    grid-template-areas:"drink sauce trash" "tray tray trash";
-  }
-  .drinks,.sauces { grid-template-columns:repeat(3,1fr); }
-  .drink-button { min-height:58px; }
-  .prep-stations { grid-template-columns:repeat(3,1fr); }
+@media (max-width:899px){
+  body.game-active{overflow:auto}
+  .counter-label{display:none}
+  .service-row{grid-template-columns:1fr 1fr 58px;grid-template-areas:"drink sauce trash" "tray tray trash"}
+  .drinks,.sauces{grid-template-columns:repeat(3,1fr)}
+  .drink-button{min-height:58px}
 }
 
-@media (max-width:560px) {
-  .menu-sign p span { display:block; margin:0 0 3px; }
-  .customer-zone { min-height:252px; padding-top:31px; }
-  .pixel-awning { height:27px; }
-  .customers::before,.customers::after { display:none; }
-  .order-bubble { width:250px; }
-  .order-food { flex-basis:31px; }
-  .order-sauce small,.order-drink small { display:none; }
-  .counter-zone { grid-template-areas:"fryer" "ingredients" "service"; }
-  .ingredients { grid-template-columns:repeat(4,1fr); }
-  .service-row {
-    grid-template-columns:1fr 1fr;
-    grid-template-areas:"drink sauce" "tray tray" "trash trash";
-  }
-  .drinks,.sauces { grid-template-columns:repeat(3,1fr); }
-  .drink-button,.sauce-button { min-height:55px; }
-  .trash-bin { min-height:54px; display:flex; }
-  .prep-stations { grid-template-columns:1fr; }
-  .prep-station { min-height:48px; }
-  .homi-mascot { right:5px; width:76px; }
-  .homi-mascot img { width:64px; height:64px; }
-  .homi-mascot span { display:none; }
-  .khanh-warning-lane span { font-size:1rem; }
-  .khanh-warning-lane--two span { font-size:.65rem; }
+@media (max-width:560px){
+  .menu-sign p span{display:block;margin:0 0 3px}
+  .customer-zone{padding-top:34px}.pixel-awning{height:29px}
+  .customers::before,.customers::after{display:none}
+  .order-bubble{width:250px}.order-food{flex-basis:31px}.order-sauce small,.order-drink small{display:none}
+  .counter-zone{grid-template-areas:"fryer" "ingredients" "service"}
+  .ingredients{grid-template-columns:repeat(4,1fr)}
+  .service-row{grid-template-columns:1fr 1fr;grid-template-areas:"drink sauce" "tray tray" "trash trash"}
+  .drinks,.sauces{grid-template-columns:repeat(3,1fr)}
+  .drink-button,.sauce-button{min-height:55px}
+  .trash-bin{min-height:54px;display:flex}
+  .khanh-warning-lane span{font-size:1rem}.khanh-warning-lane--two span{font-size:.65rem}
 }
