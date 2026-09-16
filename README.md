@@ -20,9 +20,9 @@ Game quản lý thời gian thuần HTML/CSS/JavaScript về một quầy đồ 
 - 16 món đồ chiên mở dần theo ngày, 5 loại sốt, 4 loại trà và đơn có món lặp lại.
 - Từng ô chảo hoạt động độc lập, có khoảng thời gian lấy món trước khi cháy.
 - Khay phục vụ giới hạn dung lượng; cấp cao mở các đơn nhóm lớn.
-- 23 khách quen hư cấu thuộc nhiều nhóm: học sinh, giáo viên, phụ huynh, bảo vệ, cán bộ an toàn thực phẩm, tài xế và chủ quầy đối thủ.
+- 27 khách quen hư cấu thuộc nhiều nhóm: học sinh, giáo viên, phụ huynh, bảo vệ, cán bộ an toàn thực phẩm, tài xế và chủ quầy đối thủ.
 - Hội thoại ngắn trước khi lộ đơn, phản ứng sau đơn đúng/sai và tuyến truyện liên tục giữa các lượt ghé.
-- Canon riêng cho bộ ba Quý–Trang–Trân, Nhân từ Hong Kong, Thủy mê chị Thảo, Dương học IT, Vũ–Hân, Khánh, Học và Thơ.
+- Canon riêng cho bộ ba Quý–Trang–Trân; Nhân là nữ du học sinh từ Hong Kong; Thủy là nam sinh IT cùng lớp Dương và siêu thích chị Thảo; Dương học IT; Vũ–Hân; Khánh; Học; Thơ; cùng các nhân vật mới Phước Nguyên, Anh Quân, Thiên Ân, Hoàng Linh và An nam sinh bóng rổ tóc xoăn.
 - Sổ khách quen hiển thị chân dung, mô tả động, lượt ghé, trait và 5 cấp quan hệ.
 - Mở khóa nhân vật bằng ngày, uy tín, số lượt phục vụ và cờ truyện; popup mở khóa có hoạt ảnh riêng.
 - Đơn của mọi nhân vật đều ngẫu nhiên và ghi nhớ 5 đơn gần nhất để hạn chế lặp.
@@ -60,7 +60,7 @@ Mọi đường dẫn trong game đều là đường dẫn tương đối nên 
 
 ## Lưu tiến trình
 
-Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và schema phiên bản 3. Dữ liệu gồm tiền, ngày, uy tín, nâng cấp, món/nhân vật đã mở, lượt ghé, 5 đơn gần nhất, Sổ khách quen, cờ truyện, quan hệ, chương và cảnh đã xem. Save phiên bản cũ được chuyển đổi an toàn; dữ liệu sai định dạng được phục hồi về cấu hình mặc định. Trạng thái đang chiên dở không được lưu.
+Game dùng `localStorage` với khóa tương thích `caVienViaHeSave_v1` và schema phiên bản 4. Dữ liệu gồm tiền, ngày, uy tín, nâng cấp, món/nhân vật đã mở, lượt ghé, 5 đơn gần nhất, Sổ khách quen, cờ truyện, quan hệ, chương và cảnh đã xem. Save phiên bản cũ được chuyển đổi an toàn; dữ liệu sai định dạng được phục hồi về cấu hình mặc định. Trạng thái đang chiên dở không được lưu.
 
 ## Cấu trúc
 
@@ -114,3 +114,10 @@ Có thể chạy `node qa/validate.mjs` nếu máy đã có Node.js để kiểm
 ## Giấy phép nội dung
 
 Mã nguồn và asset trong repository này được tạo cho dự án **Cá Viên Vỉa Hè**. Không có asset nào được sao chép hoặc hotlink từ ảnh tham chiếu.
+
+
+## Build hiện tại
+
+`2026.09.16-CLEAN-STORY-v4`
+
+Bản này dọn sạch Trâm, My, Gia Huy và các giáo viên đã bỏ; sửa order để không bao giờ gọi món chưa mở khóa; thêm Homi; đồng bộ portrait pixel; sửa font tiếng Việt bằng system font stack an toàn; và sửa animation Khánh chạy hết màn hình trước khi lặp lại.
