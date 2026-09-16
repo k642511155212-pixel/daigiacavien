@@ -93,8 +93,14 @@ const foodSvgs = {
   "mi-tron":`<path fill="#dfe9e7" stroke="#4b2921" stroke-width="7" d="M14 47h100l-14 68H28z"/><path fill="#efbd3f" d="M27 62h74v34H27z"/><path fill="none" stroke="#a85d2f" stroke-width="5" d="M30 70l14 9 13-9 14 9 13-9 14 9M30 88l14-8 13 8 14-8 15 8"/><path stroke="#4b2921" stroke-width="5" d="M88 18l-17 61m36-55L82 79"/>`,
   "ca-vien-curry":`<path fill="#e5ece9" stroke="#4b2921" stroke-width="7" d="M13 47h102l-14 68H27z"/><path fill="#d58a2b" d="M26 62h76v36H26z"/><g fill="#e7ae39" stroke="#7c4328" stroke-width="4"><path d="M33 66h23v22H33z"/><path d="M61 72h24v22H61z"/><path d="M82 60h20v21H82z"/></g><path fill="#55a04b" d="M49 58h12v13H49z"/>`
 };
+const classicFoodSvgs = {
+  "ca-vien":`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80"><path d="M11 71L83 9" stroke="#b87a3b" stroke-width="6" stroke-linecap="round"/><g fill="#f5b83e" stroke="#532c21" stroke-width="5"><circle cx="33" cy="54" r="16"/><circle cx="53" cy="37" r="16"/><circle cx="72" cy="21" r="15"/></g><g fill="#ffe993"><circle cx="28" cy="48" r="5"/><circle cx="48" cy="31" r="5"/><circle cx="68" cy="16" r="4"/></g></svg>`,
+  "bo-vien":`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80"><path d="M12 70L84 9" stroke="#b87a3b" stroke-width="6" stroke-linecap="round"/><g fill="#8e4d2f" stroke="#46271f" stroke-width="5"><circle cx="33" cy="53" r="16"/><circle cx="53" cy="36" r="16"/><circle cx="72" cy="20" r="15"/></g><g fill="#d78b53"><circle cx="28" cy="47" r="4"/><circle cx="48" cy="30" r="4"/><circle cx="68" cy="15" r="4"/></g></svg>`,
+  "xuc-xich":`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80"><path d="M13 70L83 10" stroke="#b87a3b" stroke-width="6" stroke-linecap="round"/><path d="M27 59q-10-12 2-22L63 9q12-10 22 2t-1 22L49 62q-12 9-22-3z" fill="#e95f43" stroke="#522b22" stroke-width="5"/><path d="M41 30l11 12m2-24l12 12" stroke="#ffbd7b" stroke-width="4" stroke-linecap="round"/></svg>`
+};
 for (const [id, art] of Object.entries(foodSvgs)) {
-  fs.writeFileSync(path.join(foodDir, id + ".svg"), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" shape-rendering="crispEdges"><path fill="#fff0b8" d="M0 0h128v128H0z"/><path fill="#f8dc8a" d="M8 106h112v14H8z"/>${art}</svg>`);
+  const svg = classicFoodSvgs[id] || `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" shape-rendering="crispEdges"><path fill="#fff0b8" d="M0 0h128v128H0z"/><path fill="#f8dc8a" d="M8 106h112v14H8z"/>${art}</svg>`;
+  fs.writeFileSync(path.join(foodDir, id + ".svg"), svg);
 }
 
 const drinks = {

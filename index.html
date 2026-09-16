@@ -50,11 +50,11 @@
         <div class="menu-progress game-panel" aria-label="Tiến trình hiện tại">
           <div class="chapter-progress"><span>Chương truyện</span><strong id="menu-chapter">300 nghìn cuối cùng</strong></div>
           <div><span>Ngày</span><strong id="menu-day">1</strong></div>
-          <div><span>Tiền quầy</span><strong id="menu-money">35.000đ</strong></div>
+          <div><span>Tiền quầy</span><strong id="menu-money">300.000đ</strong></div>
           <div><span>Uy tín</span><strong id="menu-reputation">60/100</strong></div>
           <div><span>Kỷ lục</span><strong id="menu-best">0</strong></div>
+          <div class="build-row"><span>Phiên bản</span><strong id="build-version">BUILD: 2026.09-CLEAN-CHARACTER-UPDATE</strong></div>
         </div>
-        <div class="build-chip" aria-label="Phiên bản game">Build <span id="build-version">2026.09.16-CLEAN-STORY-v4</span></div>
       </div>
     </section>
 
@@ -62,8 +62,8 @@
       <header class="hud game-panel">
         <div class="hud-brand"><img src="./assets/ui/mini-logo.svg" alt="Cá Viên Vỉa Hè"></div>
         <div class="hud-stat"><span>Ngày</span><strong id="hud-day">1</strong></div>
-        <div class="hud-stat hud-stat--timer"><span>Khách hôm nay</span><strong id="hud-time">0/4</strong><div class="mini-progress"><i id="day-time-bar"></i></div></div>
-        <div class="hud-stat"><span>Tiền tạm tính</span><strong id="hud-money">35.000đ</strong></div>
+        <div class="hud-stat hud-stat--timer"><span>Khách hôm nay</span><strong id="hud-time">0/8</strong><div class="mini-progress"><i id="day-time-bar"></i></div></div>
+        <div class="hud-stat"><span>Tiền tạm tính</span><strong id="hud-money">300.000đ</strong></div>
         <div class="hud-stat"><span>Uy tín</span><strong id="hud-reputation">60</strong><div class="mini-progress mini-progress--rep"><i id="rep-bar"></i></div></div>
         <div id="combo-box" class="combo-box"><span>Combo</span><strong id="hud-combo">x1</strong></div>
         <div class="hud-actions">
@@ -78,10 +78,14 @@
           <div class="zone-heading">
             <h2 id="customer-heading">Khách đang chờ</h2>
             <span id="world-event">Ngày thường</span>
-            <span id="customer-count">0/4 lượt</span>
+            <span id="customer-count">0/8 lượt</span>
           </div>
           <div id="customers" class="customers" role="list"></div>
           <div id="empty-customers" class="empty-customers">Nghe tiếng xe đẩy leng keng… khách sắp tới rồi!</div>
+          <aside id="homi-mascot" class="homi-mascot" hidden aria-label="Homi, linh vật của quầy">
+            <span id="homi-speech">Homi đang trực quầy.</span>
+            <img src="./assets/characters/homi.svg" alt="Homi, chú chó corgi của quầy">
+          </aside>
           <div id="customer-dialogue" class="customer-dialogue game-panel" hidden role="dialog" aria-modal="false" aria-labelledby="customer-dialogue-speaker">
             <img id="customer-dialogue-avatar" src="./assets/ui/cart.svg" alt="">
             <div class="customer-dialogue-copy">
@@ -96,23 +100,19 @@
           </div>
         </section>
 
-        <div id="homi-mascot" class="homi-mascot" aria-label="Homi, chó corgi của quầy">
-          <img src="./assets/characters/homi.svg" alt="Homi, chó corgi của quầy">
-          <span>Homi</span>
-        </div>
-
         <section class="counter-zone" aria-label="Quầy chế biến">
           <div class="counter-label counter-label--prep" aria-hidden="true">BÀN SƠ CHẾ</div>
           <div class="counter-label counter-label--cook" aria-hidden="true">BẾP CHIÊN</div>
           <div class="counter-label counter-label--serve" aria-hidden="true">QUẦY GIAO MÓN</div>
           <div class="ingredient-panel game-panel">
-            <div class="panel-title"><h2>Nguyên liệu</h2><span>Bấm để cho vào chảo</span></div>
+            <div class="panel-title"><h2>Thực đơn</h2><span>Bấm món để bắt đầu chế biến</span></div>
             <div id="ingredients" class="ingredients"></div>
           </div>
 
           <div class="fryer-panel game-panel">
             <div class="panel-title"><h2>Chảo chiên</h2><span id="fryer-help">Lấy ra khi món chuyển SẴN SÀNG</span></div>
             <div id="fryer-slots" class="fryer-slots"></div>
+            <div id="prep-stations" class="prep-stations" hidden aria-label="Trạm trộn và nồi món nóng"></div>
           </div>
 
           <div class="service-row">
@@ -225,7 +225,7 @@
       <h2 id="how-title">Cách chơi</h2>
       <div class="how-steps">
         <article><b>1</b><div><strong>Đọc đơn</strong><p>Chọn khách và xem món, số lượng, loại sốt trong bong bóng.</p></div></article>
-        <article><b>2</b><div><strong>Chiên món</strong><p>Bấm nguyên liệu để lấp chảo trống. Mỗi ô chảo chạy độc lập.</p></div></article>
+        <article><b>2</b><div><strong>Chế biến</strong><p>Bấm món để đưa vào chảo, bàn trộn hoặc nồi phù hợp. Mỗi trạm chạy độc lập.</p></div></article>
         <article><b>3</b><div><strong>Canh màu xanh</strong><p>Lấy món khi ghi “Sẵn sàng”. Chậm tay, món sẽ cháy và phải bỏ.</p></div></article>
         <article><b>4</b><div><strong>Xếp khay & chọn sốt</strong><p>Khay phải khớp chính xác món khách gọi, kể cả món lặp lại.</p></div></article>
         <article><b>5</b><div><strong>Phục vụ</strong><p>Đơn đúng tăng tiền, uy tín và combo. Đơn sai làm mất combo.</p></div></article>

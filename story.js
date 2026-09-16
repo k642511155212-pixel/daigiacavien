@@ -23,6 +23,7 @@
     valentine:{ id:"valentine", label:"Lễ Valentine", spawnScale:.82, patienceScale:1.1, groupChance:.14 },
     graduation:{ id:"graduation", label:"Tốt nghiệp", spawnScale:.74, patienceScale:1.2, groupChance:.22 },
     "food-street":{ id:"food-street", label:"Đua phố ăn vặt", spawnScale:.6, patienceScale:.9, groupChance:.2 }
+    ,"music-event":{ id:"music-event", label:"Nhịp trống đầu hẻm", spawnScale:.7, patienceScale:1.08, groupChance:.18 }
   });
 
   const avatar = function (id) { const person = CVVH.Characters.getById(id); return person ? person.avatar : "./assets/ui/cart.svg"; };
@@ -81,7 +82,8 @@
 
   function chapterForDay(day) { return CHAPTERS.find(function (chapter) { return day >= chapter.from && day <= chapter.to; }) || CHAPTERS[CHAPTERS.length - 1]; }
 
-  function eventForDay(day) {
+  function eventForDay(day, save) {
+    if (save && Number(save.story.flags.musicEventDay || 0) === day) return EVENTS["music-event"];
     if (day === 9 || day === 10) return EVENTS["food-street"];
     if (day >= 15 && day <= 17) return EVENTS.graduation;
     if (day >= 12 && day <= 14) return EVENTS.exams;

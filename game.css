@@ -35,6 +35,11 @@
 .customers { min-height: 260px; display: flex; justify-content: center; align-items: end; gap: clamp(8px,2vw,26px); }
 .empty-customers { width: fit-content; margin: 60px auto 0; padding: 10px 16px; border-radius: 14px; background: rgba(255,248,219,.86); border: 2px dashed var(--brown-2); color: var(--brown-2); font-size: .86rem; font-weight: 900; }
 .empty-customers[hidden] { display: none; }
+.homi-mascot { position:absolute; z-index:8; right:14px; bottom:8px; width:104px; pointer-events:none; filter:drop-shadow(0 5px 0 rgba(58,29,20,.24)); }
+.homi-mascot[hidden] { display:none; }
+.homi-mascot img { display:block; width:82px; height:82px; margin-left:auto; object-fit:contain; image-rendering:pixelated; }
+.homi-mascot span { display:block; width:150px; margin-left:-46px; padding:5px 7px; border:2px solid var(--brown); border-radius:5px; background:#fff8d8; box-shadow:2px 2px 0 var(--brown); font-size:.53rem; line-height:1.2; font-weight:900; }
+.homi-mascot[data-mood="excited"] img,.homi-mascot[data-mood="music"] img { animation:happy-bounce .55s ease; }
 
 .customer-card {
   position: relative; width: clamp(172px,20vw,250px); min-height: 225px; display: flex; flex-direction: column; justify-content: end; align-items: center;
@@ -115,6 +120,19 @@
 .fryer-progress { position:absolute; z-index:4; left:4px; right:4px; bottom:17px; height:6px; overflow:hidden; border-radius:99px; background:rgba(255,255,255,.2); }
 .fryer-progress i { display:block; height:100%; width:0; background:var(--gold); transition:width .15s linear,background .15s; }
 .fryer-slot.ready .fryer-progress i { background:#78e85e; }.fryer-slot.burnt .fryer-progress i { background:#7f3228; }
+
+.prep-stations { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; margin-top:6px; }
+.prep-stations[hidden] { display:none; }
+.prep-station { position:relative; min-height:58px; display:grid; grid-template-columns:40px 1fr; grid-template-rows:auto auto; align-items:center; gap:1px 5px; padding:4px; overflow:hidden; border:2px solid var(--brown); border-radius:5px; background:linear-gradient(#dff8ed,#8fd4c8); box-shadow:2px 2px 0 var(--brown); color:var(--brown); }
+.prep-station.empty { opacity:.72; }
+.prep-station.ready { background:linear-gradient(#efff9b,#7ddd75); }
+.prep-station.burnt { background:linear-gradient(#8e6252,#4d3029); color:#fff; }
+.prep-label { grid-column:2; font-size:.55rem; text-transform:uppercase; }
+.prep-food { grid-row:1/3; width:38px; height:38px; display:grid; place-items:center; }
+.prep-food img { width:36px; height:36px; object-fit:contain; image-rendering:pixelated; }
+.prep-status { grid-column:2; font-size:.48rem; font-weight:950; }
+.prep-progress { position:absolute; left:44px; right:4px; bottom:3px; height:4px; background:rgba(65,35,25,.18); }
+.prep-progress i { display:block; width:0; height:100%; background:var(--orange); }
 
 .sauces { display:grid; grid-template-columns:repeat(5,1fr); gap:5px; }
 .sauce-button { min-height:83px; padding:5px 2px; border:2px solid var(--brown); border-radius:12px; background:#fff7de; box-shadow:0 3px 0 var(--brown); cursor:pointer; }
@@ -242,23 +260,8 @@
 
 .khanh-alert { position:fixed;inset:0;z-index:880;overflow:hidden;background:rgba(61,24,24,.52);pointer-events:none;display:grid;align-content:center;gap:24px; }
 .khanh-alert[hidden]{display:none}
-.khanh-warning-lane { width:100%;padding:13px 0;border-block:5px solid #4f2a22;background:repeating-linear-gradient(135deg,#ffd437 0 22px,#ef503c 22px 44px);box-shadow:0 7px 0 rgba(54,24,20,.45);overflow:hidden;transform:rotate(-1deg); }
-.khanh-warning-lane span { display:block;width:max-content;padding:7px 22px;background:#fff5bd;border:4px solid #4f2a22;color:#d9362b;font-size:clamp(1.15rem,4vw,3.3rem);font-weight:950;line-height:1.25;text-shadow:3px 3px 0 #ffd04a;animation:khanh-march 3.5s linear 2; }
-.khanh-warning-lane--two{transform:rotate(1deg)}.khanh-warning-lane--two span{font-size:clamp(.8rem,2vw,1.6rem);color:#087b78;animation:khanh-march 3.5s linear 2}
+.khanh-warning-lane { width:130%;margin-left:-15%;padding:13px 0;border-block:5px solid #4f2a22;background:repeating-linear-gradient(135deg,#ffd437 0 22px,#ef503c 22px 44px);box-shadow:0 7px 0 rgba(54,24,20,.45);overflow:hidden;transform:rotate(-2deg); }
+.khanh-warning-lane span { display:block;width:max-content;padding:7px 22px;background:#fff5bd;border:4px solid #4f2a22;color:#d9362b;font-size:clamp(1.15rem,4vw,3.3rem);font-weight:950;line-height:1.25;text-shadow:3px 3px 0 #ffd04a;animation:khanh-march 1s linear 3; }
+.khanh-warning-lane--two{transform:rotate(2deg)}.khanh-warning-lane--two span{font-size:clamp(.8rem,2vw,1.6rem);color:#087b78;animation-direction:reverse}
 .khanh-warning-burst{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(8deg);display:grid;place-items:center;width:82px;height:82px;border:6px solid #4f2a22;background:#fff;color:#ef4a3e;font-size:3.5rem;font-weight:950;box-shadow:7px 7px 0 #ffd437;animation:warning-pop .45s ease-in-out infinite alternate}
 .khanh-shake .game-screen.active{animation:screen-rumble .16s linear 12}
-
-/* Homi mascot: a small non-customer presence in the stall scene. */
-.homi-mascot{
-  position:absolute;z-index:3;right:18px;bottom:calc(43% + 12px);display:grid;justify-items:center;gap:2px;
-  filter:drop-shadow(0 5px 0 rgba(79,42,34,.32));pointer-events:none;transform-origin:50% 100%;
-}
-.homi-mascot img{width:86px;height:66px;object-fit:contain;image-rendering:pixelated;}
-.homi-mascot span{padding:2px 8px;border:2px solid var(--brown);border-radius:99px;background:#fff1bd;color:var(--brown);font-size:.66rem;font-weight:900;}
-.khanh-shake .homi-mascot{animation:homi-flee .72s ease-in-out 2 alternate;}
-@keyframes homi-flee{to{transform:translateX(90px) rotate(7deg) scale(.9)}}
-
-.build-chip{
-  grid-column:1/-1;justify-self:center;padding:4px 9px;border:2px solid rgba(79,42,34,.6);border-radius:99px;
-  background:rgba(255,248,221,.86);color:#4f2a22;font-size:.68rem;font-weight:800;text-shadow:none;
-}

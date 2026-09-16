@@ -12,10 +12,10 @@
 @keyframes food-pop { from{transform:scale(.3) rotate(-18deg)} 75%{transform:scale(1.13) rotate(3deg)} to{transform:none} }
 @keyframes combo-pop { 45%{transform:scale(1.2) rotate(-3deg)} }
 @keyframes tutorial-pulse { 50%{outline-color:#ff8c36;outline-offset:8px} }
-@keyframes order-reveal { from{opacity:0;transform:translate(-50%,8px) scale(.82)} to{opacity:1;transform:translateX(-50%) scale(1)} }
+@keyframes order-reveal { from{opacity:0;transform:translate(10px,-50%) scale(.84)} to{opacity:1;transform:translateY(-50%) scale(1)} }
 @keyframes unlock-pop { from{opacity:0;transform:scale(.72) translateY(24px)} to{opacity:1;transform:none} }
 @keyframes portrait-bounce { 0%{transform:scale(.55) rotate(-7deg)} 65%{transform:scale(1.08) rotate(2deg)} 100%{transform:none} }
-@keyframes khanh-march { from{transform:translateX(calc(-100% - 6vw))} to{transform:translateX(calc(100vw + 6vw))} }
+@keyframes khanh-march { from{transform:translateX(-15%)}to{transform:translateX(52%)} }
 @keyframes warning-pop { from{transform:translate(-50%,-50%) rotate(-8deg) scale(.86)}to{transform:translate(-50%,-50%) rotate(8deg) scale(1.08)} }
 @keyframes screen-rumble { 0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-1px)} }
 @keyframes coin-burst { to{transform:translate(var(--tx),var(--ty)) rotate(500deg) scale(.4);opacity:0} }

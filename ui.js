@@ -28,6 +28,7 @@
     byId("menu-money").textContent = CVVH.Economy.money(save.money);
     byId("menu-reputation").textContent = Math.round(save.reputation) + "/100";
     byId("menu-best").textContent = new Intl.NumberFormat("vi-VN").format(save.bestScore);
+    byId("build-version").textContent = "BUILD: " + CVVH.Config.GAME_VERSION;
     const continueButton = byId("continue-btn");
     continueButton.disabled = !save.hasPlayed;
     continueButton.title = save.hasPlayed ? "Tiếp tục từ ngày đã lưu" : "Hãy chơi ngày đầu tiên trước";
@@ -46,13 +47,13 @@
   function renderIngredients(day, enabled) {
     const container = byId("ingredients");
     container.textContent = "";
-    CVVH.Config.getUnlockedFoods(day).forEach(function (food) {
+    CVVH.Config.FOODS.filter(function (food) { return food.unlockDay <= day; }).forEach(function (food) {
       const locked = food.unlockDay > day;
       const button = document.createElement("button");
       button.className = "ingredient-button" + (locked ? " locked" : "");
       button.dataset.foodId = food.id;
       button.disabled = locked || !enabled;
-      button.setAttribute("aria-label", locked ? food.name + " mở khóa ở ngày " + food.unlockDay : "Cho " + food.name + " vào chảo, giá vốn " + CVVH.Economy.money(food.cost));
+      button.setAttribute("aria-label", locked ? food.name + " mở khóa ở ngày " + food.unlockDay : "Bắt đầu làm " + food.name + " tại " + (food.stationName || "chảo chiên") + ", giá vốn " + CVVH.Economy.money(food.cost));
       button.appendChild(image(food.image, ""));
       const strong = document.createElement("strong"); strong.textContent = locked ? "Ngày " + food.unlockDay : food.shortName;
       const small = document.createElement("small"); small.textContent = locked ? "Chưa mở" : CVVH.Economy.money(food.cost);
@@ -62,7 +63,7 @@
 
   function renderSauces(day, selected, enabled) {
     const container = byId("sauces"); container.textContent = "";
-    CVVH.Config.getUnlockedSauces(day).forEach(function (sauce) {
+    CVVH.Config.SAUCES.filter(function (sauce) { return sauce.unlockDay <= day; }).forEach(function (sauce) {
       const button = document.createElement("button");
       button.className = "sauce-button" + (selected === sauce.id ? " selected" : "");
       button.dataset.sauceId = sauce.id; button.disabled = !enabled;
@@ -76,7 +77,7 @@
 
   function renderDrinks(day, selected, enabled) {
     const container = byId("drinks"); container.textContent = "";
-    CVVH.Config.getUnlockedDrinks(day).forEach(function (drink) {
+    CVVH.Config.DRINKS.filter(function (drink) { return drink.unlockDay <= day; }).forEach(function (drink) {
       const button = document.createElement("button");
       button.className = "drink-button" + (selected === drink.id ? " selected" : "");
       button.dataset.drinkId = drink.id; button.disabled = !enabled;
@@ -142,6 +143,75 @@
       if (!button || button.dataset.foodId !== (slot.foodId || "")) { renderFryers(manager, enabled); return; }
       updateFryerButton(button, slot, enabled);
     });
+  }
+
+  function createPrepStation(slot) {
+    const button = document.createElement("button");
+    button.type = "button"; button.className = "prep-station";
+    button.dataset.prepIndex = slot.index; button.dataset.foodId = slot.foodId || "";
+    const label = document.createElement("strong"); label.className = "prep-label"; label.textContent = slot.stationName;
+    const art = document.createElement("div"); art.className = "prep-food";
+    const status = document.createElement("span"); status.className = "prep-status";
+    const progress = document.createElement("div"); progress.className = "prep-progress"; progress.appendChild(document.createElement("i"));
+    button.append(label, art, progress, status);
+    return button;
+  }
+
+  function updatePrepButton(button, slot, enabled) {
+    const className = "prep-station " + slot.state;
+    if (button.className !== className) button.className = className;
+    button.dataset.foodId = slot.foodId || "";
+    button.disabled = !enabled || slot.state === "empty" || slot.state === "cooking";
+    const art = button.querySelector(".prep-food");
+    if (art) {
+      const current = art.querySelector("img");
+      if (slot.foodId && (!current || current.dataset.foodId !== slot.foodId)) {
+        art.textContent = "";
+        const food = CVVH.Config.foodById(slot.foodId);
+        const img = image(food.image, food.name); img.dataset.foodId = slot.foodId; art.appendChild(img);
+      } else if (!slot.foodId && current) art.textContent = "";
+    }
+    const fill = button.querySelector(".prep-progress i"); if (fill) fill.style.width = Math.round(slot.progress * 100) + "%";
+    const status = button.querySelector(".prep-status"); if (status) status.textContent = slot.state === "empty" ? "SẴN TRẠM" : slot.state === "cooking" ? "ĐANG LÀM" : slot.state === "ready" ? "LẤY MÓN" : "BỎ MÓN";
+    button.setAttribute("aria-label", slot.stationName + ": " + (status ? status.textContent : slot.state));
+  }
+
+  function renderPrepStations(manager, enabled) {
+    const container = byId("prep-stations");
+    container.hidden = manager.slots.length === 0;
+    const expected = new Set(manager.slots.map(function (slot) { return String(slot.index); }));
+    container.querySelectorAll("[data-prep-index]").forEach(function (button) { if (!expected.has(button.dataset.prepIndex)) button.remove(); });
+    manager.slots.forEach(function (slot) {
+      let button = container.querySelector("[data-prep-index='" + slot.index + "']");
+      if (!button) { button = createPrepStation(slot); container.appendChild(button); }
+      updatePrepButton(button,slot,enabled);
+    });
+  }
+
+  function updatePrepStations(manager, enabled) {
+    const container = byId("prep-stations");
+    if (container.querySelectorAll("[data-prep-index]").length !== manager.slots.length) { renderPrepStations(manager,enabled); return; }
+    manager.slots.forEach(function (slot) {
+      const button = container.querySelector("[data-prep-index='" + slot.index + "']");
+      if (!button) { renderPrepStations(manager,enabled); return; }
+      updatePrepButton(button,slot,enabled);
+    });
+  }
+
+  function renderMascot(save, event, customer) {
+    const wrap = byId("homi-mascot");
+    const unlocked = save.unlockedCharacters.includes("homi") || save.story.flags.homiUnlocked === true;
+    wrap.hidden = !unlocked;
+    if (!unlocked) return;
+    let speech = "Homi đang trực quầy.";
+    let mood = "idle";
+    if (event.id === "rain") { speech = "Mưa rồi! Homi nép dưới mái bạt."; mood = "rain"; }
+    if (customer && customer.characterId === "khanh") { speech = "Gâu! Khay lớn đang tới!"; mood = "excited"; }
+    if (customer && customer.characterId === "thien-an") { speech = "Homi ngồi sát chân Thiên Ân."; mood = "soft"; }
+    if (customer && customer.characterId === "an") { speech = "Homi nhìn quả bóng của An rồi nghiêng đầu."; mood = "ball"; }
+    if (customer && customer.characterId === "hoang-linh") { speech = "Homi vẫy đuôi đúng nhịp trống."; mood = "music"; }
+    wrap.dataset.mood = mood;
+    byId("homi-speech").textContent = speech;
   }
 
   function renderTray(items, capacity) {
@@ -293,7 +363,7 @@
       alert.hidden = true;
       document.body.classList.remove("khanh-shake");
       if (typeof done === "function") done();
-    }, 7100);
+    }, 2850);
   }
 
   function playCustomerDialogue(lines, options, done) {
@@ -462,7 +532,8 @@
   CVVH.UI = {
     byId: byId, showScreen: showScreen, openModal: openModal, closeModal: closeModal, renderMenu: renderMenu,
     setSoundButtons: setSoundButtons, renderIngredients: renderIngredients, renderSauces: renderSauces, renderDrinks: renderDrinks,
-    renderFryers: renderFryers, updateFryers: updateFryers, renderTray: renderTray, renderCustomers: renderCustomers, updateCustomers: updateCustomers, updateHUD: updateHUD,
+    renderFryers: renderFryers, updateFryers: updateFryers, renderPrepStations:renderPrepStations, updatePrepStations:updatePrepStations,
+    renderTray: renderTray, renderCustomers: renderCustomers, updateCustomers: updateCustomers, renderMascot:renderMascot, updateHUD: updateHUD,
     updateServeState: updateServeState, playCustomerDialogue: playCustomerDialogue, showUnlock: showUnlock, showKhanhAlert: showKhanhAlert,
     toast: toast, floating: floating, coinBurst: coinBurst, sparkle: sparkle,
     renderShop: renderShop, renderStats: renderStats, renderCharacterBook: renderCharacterBook, renderEnd: renderEnd
