@@ -30,9 +30,6 @@
       CVVH.UI.byId("fryer-slots").addEventListener("click", (event) => {
         const slot = event.target.closest("[data-slot-index]"); if (slot) this.useFryer(Number(slot.dataset.slotIndex), slot);
       });
-      CVVH.UI.byId("prep-stations").addEventListener("click", (event) => {
-        const slot = event.target.closest("[data-prep-index]"); if (slot) this.usePrep(Number(slot.dataset.prepIndex), slot);
-      });
       CVVH.UI.byId("sauces").addEventListener("click", (event) => {
         const button = event.target.closest("[data-sauce-id]"); if (button) this.chooseSauce(button.dataset.sauceId);
       });
@@ -69,26 +66,18 @@
       this.spawnElapsed = 0;
       this.spawnedCount = 0;
       this.resolvedCustomers = 0;
-      this.currentEvent = CVVH.Story.eventForDay(this.day, this.save);
-      const targetRoll = ((this.day * 9301 + 49297) % 233280) / 233280;
-      this.dailyTarget = CVVH.Config.dailyCustomerTarget(this.day, this.currentEvent.id, function () { return targetRoll; });
+      this.dailyTarget = Math.min(CVVH.Config.BALANCE.dailyCustomerMax, CVVH.Config.BALANCE.dailyCustomerBase + Math.floor((this.day - 1) * .72));
       this.khanhAlertShown = false;
-      this.khanhPending = false;
-      this.khanhAppearedToday = false;
-      this.khanhDue = Game.shouldScheduleKhanh(this.day, this.save.story.flags, function () { return ((this.day * 47) % 101) / 101; }.bind(this));
-      this.khanhSlot = this.day === 1 && !this.save.tutorialCompleted ? 0 : Math.min(this.dailyTarget - 1, 2 + (this.day % 3));
+      this.khanhSlot = Math.min(this.dailyTarget - 1, 2 + (this.day % 3));
       this.pendingTutorial = !this.save.tutorialCompleted;
       this.summary = { served: 0, lost: 0, incorrect: 0, burnt: 0, revenue: 0, ingredientCosts: 0, tips: 0, penalties: 0, bestCombo: 0, score: 0, reputationChange: 0 };
       this.combo = 0;
       this.active = true; this.paused = false; this.conversationActive = false; this.ending = false;
       this.availableFoods = CVVH.Config.FOODS.filter((food) => food.unlockDay <= this.day);
+      this.currentEvent = CVVH.Story.eventForDay(this.day);
       this.fryer = new CVVH.Cooking.FryerManager(this.modifiers.fryerCapacity, this.modifiers, {
         ready: (slot) => this.onFoodReady(slot),
         burnt: (slot) => this.onFoodBurnt(slot)
-      });
-      this.prep = new CVVH.Cooking.PrepManager(this.availableFoods.filter(function (food) { return food.station !== "fryer"; }), this.modifiers, {
-        ready:(slot) => this.onFoodReady(slot),
-        burnt:(slot) => this.onFoodBurnt(slot)
       });
       CVVH.Storage.save(this.save);
       CVVH.UI.showScreen("game-screen");
@@ -117,14 +106,6 @@
       this.raf = 0;
     }
 
-    static shouldScheduleKhanh(day, flags, random) {
-      const data = flags || {};
-      const absent = Math.max(0, Number(data.khanhDaysAbsent || 0));
-      const lastVisit = Math.max(0, Number(data.khanhLastVisitDay || 0));
-      if (day === 1 || absent >= 1 || (lastVisit > 0 && day - lastVisit >= 2)) return true;
-      return (random || Math.random)() < .55;
-    }
-
     loop(timestamp) {
       if (!this.active) return;
       const deltaMs = Math.min(100, Math.max(0, timestamp - this.lastTime));
@@ -137,7 +118,6 @@
       const deltaSeconds = deltaMs / 1000;
       this.remainingTime = Math.max(0, this.remainingTime - deltaSeconds);
       this.fryer.update(deltaMs);
-      this.prep.update(deltaMs);
 
       this.customers.forEach((customer) => {
         if (customer.update(deltaSeconds)) this.loseCustomer(customer);
@@ -147,7 +127,7 @@
       this.customers = this.customers.filter(function (customer) { return !customer.removeAt || customer.removeAt > now; });
       if (before !== this.customers.length && !this.customers.some((customer) => customer.id === this.selectedCustomerId)) this.selectedCustomerId = null;
 
-      if (!this.customers.length && !this.khanhPending && this.resolvedCustomers >= this.dailyTarget && (!this.khanhDue || this.khanhAppearedToday) && !this.ending) {
+      if (!this.customers.length && this.resolvedCustomers >= this.dailyTarget && !this.ending) {
         this.endDay();
         return;
       }
@@ -173,35 +153,26 @@
       const unlocked = CVVH.CharacterSystem.updateUnlocks(this.save, this.day, this.reputation);
       if (unlocked.length && !tutorialOrder) {
         CVVH.Storage.save(this.save);
-        this.showUnlockQueue(unlocked, () => this.spawnCustomer(tutorialOrder, forcedVariant, alertHandled));
+        this.showUnlockQueue(unlocked, () => this.spawnCustomer(false));
         return;
       }
-      if (!tutorialOrder && !alertHandled && this.khanhDue && !this.khanhAppearedToday && !this.khanhAlertShown && this.spawnedCount >= this.khanhSlot) {
+      if (!tutorialOrder && !alertHandled && !this.khanhAlertShown && this.spawnedCount >= this.khanhSlot) {
         this.khanhAlertShown = true;
-        this.khanhPending = true;
         this.conversationActive = true;
         this.renderAll(false);
         CVVH.UI.showKhanhAlert(() => {
           if (!this.active) return;
-          this.khanhPending = false;
           this.conversationActive = false;
           this.lastTime = performance.now();
           this.spawnCustomer(false, CVVH.Characters.getById("khanh"), true);
         });
         return;
       }
-      const variant = forcedVariant || (tutorialOrder ? CVVH.Characters.getById("khanh") : CVVH.CharacterSystem.chooseVisitor(this.save, this.day, this.currentEvent, Math.random));
+      const variant = forcedVariant || (tutorialOrder ? CVVH.Characters.getById("khanh") : CVVH.CharacterSystem.chooseCharacter(this.save, this.day, this.currentEvent, Math.random));
       const customer = CVVH.Customers.create(this.day, this.availableFoods, this.modifiers, this.modifiers.trayCapacity, tutorialOrder, this.save, this.currentEvent, variant);
       this.customers.push(customer);
       this.spawnedCount += 1;
-      if (variant.id === "khanh") {
-        this.khanhAppearedToday = true;
-        this.khanhPending = false;
-        this.save.story.flags.khanhLastVisitDay = this.day;
-        this.save.story.flags.khanhDaysAbsent = 0;
-      }
       this.selectedCustomerId = customer.id;
-      CVVH.Storage.save(this.save);
       CVVH.Audio.play("arrival");
       this.renderAll(true);
       this.startCustomerDialogue(customer, tutorialOrder);
@@ -243,10 +214,9 @@
       if (!this.canInteract()) return;
       const food = this.availableFoods.find(function (item) { return item.id === foodId; });
       if (!food) { CVVH.UI.toast("Món này chưa được mở khóa.", "error"); return; }
-      if (food.station === "fryer" && this.fryer.isFull()) { CVVH.UI.toast("Chảo đã kín chỗ! Hãy lấy món chín ra trước.", "error"); CVVH.Audio.play("error"); return; }
-      if (food.station !== "fryer" && this.prep.isBusy(food.station)) { CVVH.UI.toast(food.stationName + " đang bận. Hãy lấy món đã xong.", "error"); CVVH.Audio.play("error"); return; }
+      if (this.fryer.isFull()) { CVVH.UI.toast("Chảo đã kín chỗ! Hãy lấy món chín ra trước.", "error"); CVVH.Audio.play("error"); return; }
       if (this.currentWallet() < food.cost) { CVVH.UI.toast("Không đủ tiền nhập thêm nguyên liệu.", "error"); CVVH.Audio.play("error"); return; }
-      const slot = food.station === "fryer" ? this.fryer.addFood(foodId) : this.prep.addFood(foodId);
+      const slot = this.fryer.addFood(foodId);
       if (!slot) return;
       this.summary.ingredientCosts += food.cost;
       CVVH.Audio.play("fry");
@@ -265,19 +235,6 @@
         this.renderAll(true); this.tutorial.notify("collect");
       } else if (slot.state === "burnt") {
         this.fryer.discardBurnt(index); CVVH.Audio.play("click"); CVVH.UI.toast("Đã bỏ món cháy.", "info"); this.renderAll(true);
-      }
-    }
-
-    usePrep(index, sourceElement) {
-      if (!this.canInteract()) return;
-      const slot = this.prep.slots[index]; if (!slot) return;
-      if (slot.state === "ready") {
-        if (this.tray.length >= this.modifiers.trayCapacity) { CVVH.UI.toast("Khay đã đầy. Hãy phục vụ hoặc dọn khay.", "error"); CVVH.Audio.play("error"); return; }
-        const foodId = this.prep.collect(index); if (!foodId) return;
-        this.tray.push(foodId); CVVH.Audio.play("click"); CVVH.UI.floating("Đã lấy món!", sourceElement, false);
-        this.renderAll(true);
-      } else if (slot.state === "burnt") {
-        this.prep.discardBurnt(index); CVVH.Audio.play("click"); CVVH.UI.toast("Đã bỏ món hỏng.", "info"); this.renderAll(true);
       }
     }
 
@@ -324,19 +281,16 @@
       this.combo += 1;
       this.summary.bestCombo = Math.max(this.summary.bestCombo, this.combo);
       const result = CVVH.Economy.calculateOrder(customer.order, customer.patienceRatio(), this.combo, this.modifiers);
-      const loyaltyTipBonus = customer.isGeneric ? 0 : customer.relationshipPoints >= 40 ? .25 : customer.relationshipPoints >= 22 ? .16 : customer.relationshipPoints >= 10 ? .1 : customer.relationshipPoints >= 4 ? .05 : 0;
+      const loyaltyTipBonus = customer.relationshipPoints >= 40 ? .25 : customer.relationshipPoints >= 22 ? .16 : customer.relationshipPoints >= 10 ? .1 : customer.relationshipPoints >= 4 ? .05 : 0;
       result.tip = Math.round(result.tip * (1 + loyaltyTipBonus) / 500) * 500;
       if (customer.characterId === "khanh") result.tip = Math.max(5000, Math.round(result.tip * 2.5 / 500) * 500);
       this.summary.revenue += result.revenue; this.summary.tips += result.tip;
       this.reputation = Math.min(100, this.reputation + CVVH.Config.BALANCE.correctReputation);
-      let relationship = { points:0, stage:"STRANGER", leveled:false };
-      if (!customer.isGeneric) {
-        let relationPoints = 1 + (customer.patienceRatio() > .72 ? 1 : 0);
-        if (customer.character.favoriteFood && customer.order.items.includes(customer.character.favoriteFood)) relationPoints += 1;
-        relationship = CVVH.Story.relationshipGain(this.save, customer.characterId, relationPoints);
-        customer.relationshipPoints = relationship.points;
-        customer.relationshipStage = relationship.stage;
-      }
+      let relationPoints = 1 + (customer.patienceRatio() > .72 ? 1 : 0);
+      if (customer.character.favoriteFood && customer.order.items.includes(customer.character.favoriteFood)) relationPoints += 1;
+      const relationship = CVVH.Story.relationshipGain(this.save, customer.characterId, relationPoints);
+      customer.relationshipPoints = relationship.points;
+      customer.relationshipStage = relationship.stage;
       if (customer.characterId === "anh-bon-ba-bay") this.save.story.mysteryProgress = Math.min(3, this.save.story.mysteryProgress + 1);
       const responseContext = CVVH.Story.dialogueContext(customer);
       const response = CVVH.Characters.pickDialogue(customer.character, responseContext, this.save);
@@ -445,11 +399,9 @@
     useTrash() {
       if (!this.canInteract()) return;
       const burntSlots = this.fryer.slots.filter(function (slot) { return slot.state === "burnt"; });
-      const burntPrep = this.prep.slots.filter(function (slot) { return slot.state === "burnt"; });
-      if (burntSlots.length || burntPrep.length) {
+      if (burntSlots.length) {
         burntSlots.forEach((slot) => this.fryer.discardBurnt(slot.index));
-        burntPrep.forEach((slot) => this.prep.discardBurnt(slot.index));
-        CVVH.UI.toast("Đã bỏ " + (burntSlots.length + burntPrep.length) + " món hỏng.", "info"); CVVH.Audio.play("click"); this.renderAll(true);
+        CVVH.UI.toast("Đã bỏ " + burntSlots.length + " món cháy.", "info"); CVVH.Audio.play("click"); this.renderAll(true);
       } else this.clearTray();
     }
 
@@ -482,9 +434,7 @@
       if (!this.active) return;
       CVVH.UI.updateHUD(this);
       CVVH.UI.updateFryers(this.fryer, this.controlsEnabled());
-      CVVH.UI.updatePrepStations(this.prep, this.controlsEnabled());
       CVVH.UI.updateCustomers(this.customers, this.selectedCustomerId, this.maxCustomers(), this.controlsEnabled());
-      CVVH.UI.renderMascot(this.save, this.currentEvent, this.customers[0]);
       CVVH.UI.updateServeState(this.selectedCustomer(), this.tray.length, this.selectedSauce, this.selectedDrink, this.controlsEnabled());
     }
 
@@ -495,10 +445,8 @@
       CVVH.UI.renderSauces(this.day, this.selectedSauce, this.controlsEnabled());
       CVVH.UI.renderDrinks(this.day, this.selectedDrink, this.controlsEnabled());
       CVVH.UI.renderFryers(this.fryer, this.controlsEnabled());
-      CVVH.UI.renderPrepStations(this.prep, this.controlsEnabled());
       CVVH.UI.renderTray(this.tray, this.modifiers.trayCapacity);
       CVVH.UI.renderCustomers(this.customers, this.selectedCustomerId, this.maxCustomers(), this.controlsEnabled());
-      CVVH.UI.renderMascot(this.save, this.currentEvent, this.customers[0]);
       CVVH.UI.updateHUD(this);
       CVVH.UI.updateServeState(this.selectedCustomer(), this.tray.length, this.selectedSauce, this.selectedDrink, this.controlsEnabled());
       if (refreshTutorial && this.tutorial.active) this.tutorial.refreshHighlight();
@@ -515,14 +463,7 @@
       this.save.reputation = this.reputation;
       this.save.bestScore = Math.max(this.save.bestScore, this.summary.score);
       const completedDay = this.day;
-      if (this.khanhAppearedToday) {
-        this.save.story.flags.khanhDaysAbsent = 0;
-        this.save.story.flags.khanhLastVisitDay = completedDay;
-      } else {
-        this.save.story.flags.khanhDaysAbsent = Math.min(2, Number(this.save.story.flags.khanhDaysAbsent || 0) + 1);
-      }
       this.save.currentDay = this.day + 1;
-      this.save.story.flags.menuSegment = CVVH.Config.menuSegmentForDay(this.save.currentDay);
       const unlockedFoods = CVVH.Config.FOODS.filter((food) => food.unlockDay === this.save.currentDay && !this.save.unlockedFoods.includes(food.id));
       unlockedFoods.forEach((food) => this.save.unlockedFoods.push(food.id));
       const unlockedDrinks = CVVH.Config.DRINKS.filter((drink) => drink.id !== "none" && drink.unlockDay === this.save.currentDay);
