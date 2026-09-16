@@ -11,7 +11,10 @@
   });
 
   function showMenu() {
-    CVVH.UI.renderMenu(save);
+    const buildVersion = document.getElementById("build-version");
+  if (buildVersion) buildVersion.textContent = CVVH.Config.GAME_VERSION;
+
+  CVVH.UI.renderMenu(save);
     CVVH.UI.showScreen("menu-screen");
   }
 

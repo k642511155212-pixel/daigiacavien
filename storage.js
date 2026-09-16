@@ -43,7 +43,7 @@
       characterVisits: {},
       recentOrders: {},
       characterBook: {},
-      story: { introSeen: false, seenScenes: [], chaptersCompleted: [], mysteryProgress: 0, dialogueSeen: {}, flags: { khanhDaysAbsent:0, khanhLastVisitDay:0, menuSegment:1 }, activeThreads: { bestFriendDuty:0, homiSoftSide:0 }, lastVisitors: [] },
+      story: { introSeen: false, seenScenes: [], chaptersCompleted: [], mysteryProgress: 0, dialogueSeen: {}, flags: {}, activeThreads: {}, lastVisitors: [] },
       stats: blankStats()
     };
   }
@@ -64,12 +64,12 @@
     base.soundEnabled = raw.soundEnabled !== false;
     base.bestScore = Math.floor(finiteNumber(raw.bestScore, 0, 0, 999999999));
     base.hasPlayed = raw.hasPlayed === true;
-    const characterIds = new Set(CVVH.Characters.all.concat([CVVH.Characters.mascot]).map(function (character) { return character.id; }));
     if (raw.relationships && typeof raw.relationships === "object") {
       Object.keys(raw.relationships).forEach(function (id) {
-        if (characterIds.has(id)) base.relationships[id] = Math.floor(finiteNumber(raw.relationships[id], 0, 0, 999));
+        if (/^[a-z0-9-]+$/.test(id)) base.relationships[id] = Math.floor(finiteNumber(raw.relationships[id], 0, 0, 999));
       });
     }
+    const characterIds = new Set(CVVH.Characters.all.map(function (character) { return character.id; }));
     if (Array.isArray(raw.unlockedCharacters)) {
       base.unlockedCharacters = raw.unlockedCharacters.filter(function (id) { return characterIds.has(id); });
     } else if (Number(raw.version || raw.saveVersion || 1) < 2) {
@@ -127,13 +127,8 @@
       });
     }
 
-    const allowedFoodIds = new Set(C.FOODS.map(function (food) { return food.id; }));
-    if (Array.isArray(raw.unlockedFoods)) {
-      base.unlockedFoods = raw.unlockedFoods.filter(function (id) { return allowedFoodIds.has(id); });
-    }
-    C.FOODS.filter(function (food) { return food.unlockDay <= base.currentDay; }).forEach(function (food) {
-      if (!base.unlockedFoods.includes(food.id)) base.unlockedFoods.push(food.id);
-    });
+    const unlockedNow = new Set(C.getUnlockedFoods(base.currentDay).map(function (food) { return food.id; }));
+    base.unlockedFoods = Array.from(unlockedNow);
 
     if (raw.stats && typeof raw.stats === "object") {
       Object.keys(base.stats).forEach(function (key) {
@@ -141,9 +136,6 @@
       });
     }
     CVVH.CharacterSystem.ensure(base);
-    base.story.flags.khanhDaysAbsent = Math.floor(finiteNumber(base.story.flags.khanhDaysAbsent, 0, 0, 2));
-    base.story.flags.khanhLastVisitDay = Math.floor(finiteNumber(base.story.flags.khanhLastVisitDay, 0, 0, 999));
-    base.story.flags.menuSegment = CVVH.Config.menuSegmentForDay(base.currentDay);
     base.version = C.VERSION;
     base.saveVersion = C.VERSION;
     return base;

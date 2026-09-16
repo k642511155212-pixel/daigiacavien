@@ -13,8 +13,7 @@
       this.character = variant;
       this.speech = speech;
       this.relationshipPoints = relationshipPoints || 0;
-      this.relationshipStage = variant.isGeneric ? "STRANGER" : CVVH.Characters.stage(this.relationshipPoints);
-      this.isGeneric = variant.isGeneric === true;
+      this.relationshipStage = CVVH.Characters.stage(this.relationshipPoints);
       this.order = order;
       this.orderRevealed = false;
       this.maxPatience = Math.max(14, 30 * variant.patienceMultiplier * patienceScale - Math.min(day - 1, 10) * .55);
@@ -37,21 +36,21 @@
     patienceRatio() { return Math.max(0, this.remainingPatience / this.maxPatience); }
   }
 
-  function create(day, availableFoods, modifiers, maxItems, tutorialOrder, save, event, forcedVariant) {
-    const variant = forcedVariant || (tutorialOrder ? CVVH.Characters.getById("khanh") : CVVH.CharacterSystem.chooseCharacter(save, day, event, Math.random));
-    const order = CVVH.CharacterSystem.generateOrder(save, variant, day, availableFoods, maxItems, Math.random, tutorialOrder);
-    const relation = variant.isGeneric ? 0 : (Number(save.relationships[variant.id]) || 0);
-    if (!variant.isGeneric && relation >= 22 && Math.random() < .14 && order.items.length < maxItems) {
+  function create(day, availableFoods, modifiers, maxItems, tutorialOrder, save, event, forcedVariant, specialKhanh) {
+    const variant = forcedVariant || (tutorialOrder ? CVVH.Characters.getById("trang") : CVVH.CharacterSystem.chooseCharacter(save, day, event, Math.random));
+    const order = CVVH.CharacterSystem.generateOrder(save, variant, day, availableFoods, maxItems, Math.random, tutorialOrder, specialKhanh === true);
+    const relation = Number(save.relationships[variant.id]) || 0;
+    if (relation >= 22 && Math.random() < .14 && order.items.length < maxItems) {
       order.items.push(availableFoods[Math.floor(Math.random() * availableFoods.length)].id);
       order.secretBonus = .12;
     }
     const context = relation === 0 ? "firstVisit" : relation >= 10 && Math.random() < .24 ? "highRelationship" : event.id === "rain" ? "rain" : event.id === "exams" ? "exams" : event.id === "graduation" ? "graduation" : "normal";
     const speech = CVVH.Characters.pickDialogue(variant, context, save);
-    if (!variant.isGeneric) {
-      CVVH.CharacterSystem.recordOrder(save, variant.id, order);
-      CVVH.CharacterSystem.recordVisit(save, variant.id);
-    }
-    return new Customer(variant, order, day, (1 + modifiers.patienceBonus) * event.patienceScale, speech, relation);
+    CVVH.CharacterSystem.recordOrder(save, variant.id, order);
+    CVVH.CharacterSystem.recordVisit(save, variant.id);
+    const customer = new Customer(variant, order, day, (1 + modifiers.patienceBonus) * event.patienceScale * (specialKhanh ? 1.7 : 1), speech, relation);
+    customer.specialKhanh = specialKhanh === true;
+    return customer;
   }
 
   CVVH.Customers = { Customer: Customer, create: create };
