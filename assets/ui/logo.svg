@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 300" shape-rendering="crispEdges">
+  <path fill="#4f2a22" d="M64 41h592v204H64zM40 75h40v136H40zm640 0h-40v136h40z"/>
+  <path fill="#ef5638" d="M72 33h576v200H72z"/><path fill="#2bb9ae" d="M72 33h576v44H72z"/><path fill="#ffcf42" d="M86 86h548v128H86z"/><path fill="#fff4bd" d="M98 98h524v104H98z"/>
+  <g fill="#ef5638" stroke="#4f2a22" stroke-width="7"><rect x="20" y="103" width="55" height="55"/><rect x="645" y="103" width="55" height="55"/></g>
+  <text x="360" y="150" text-anchor="middle" font-family="DejaVu Sans,Arial,sans-serif" font-size="62" font-weight="900" fill="#ef5638" stroke="#4f2a22" stroke-width="11" paint-order="stroke">CÁ VIÊN</text>
+  <text x="360" y="214" text-anchor="middle" font-family="DejaVu Sans,Arial,sans-serif" font-size="58" font-weight="900" fill="#2bb9ae" stroke="#4f2a22" stroke-width="10" paint-order="stroke">VỈA HÈ</text>
+  <path fill="#fff" d="M111 39h31v12h-31zm45 0h15v12h-15zm389 0h31v12h-31z"/>
+  <path fill="#bd8243" d="m88 267 57-53 8 8-56 54z"/><g fill="#f3a13d" stroke="#4f2a22" stroke-width="5"><rect x="91" y="245" width="24" height="24"/><rect x="111" y="225" width="24" height="24"/><rect x="131" y="205" width="24" height="24"/></g>
+  <path fill="#fff" d="M579 242h56v35h-56z" stroke="#4f2a22" stroke-width="6"/><path fill="#f0a348" d="M584 251h46v21h-46z"/><path fill="#6fbe54" d="M590 244h12v12h-12z"/>
+</svg>
